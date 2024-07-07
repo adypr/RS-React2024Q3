@@ -83,27 +83,35 @@ class App extends React.Component<Record<string, never>, MainState> {
 
     return (
       <>
-        <header>
-          <h1>Star Treck</h1>
-          <h2>Astronomical Objects</h2>
-          <div className="buttons">
-            <Search
-              searching={searching}
-              onSearchChange={this.handleSearchChange}
-              onSearchSubmit={this.handleSearchSubmit}
-            />
-            <button onClick={this.handleThrowError}>Emulate Error</button>
+        <header className='header'>
+          <div className='wrapper'>
+            <h1>Star Treck</h1>
+            <h2>Astronomical Objects</h2>
+            <div className="buttons">
+              <Search
+                searching={searching}
+                onSearchChange={this.handleSearchChange}
+                onSearchSubmit={this.handleSearchSubmit}
+              />
+              <button className='button button_error' onClick={this.handleThrowError}>Emulate Error</button>
+            </div>
           </div>
         </header>
         <main>
-          {loading && <div>Loading...</div>}
-          <div className="card-list">
-            {data && !loading && (
-              <>{this.renderList(data.astronomicalObjects)}</>
-            )}
+          <div className='wrapper'>
+            {loading && <div>Loading...</div>}
+            <div className="card-list">
+              {data && !loading && (
+                <>{this.renderList(data.astronomicalObjects)}</>
+              )}
+            </div>
           </div>
         </main>
-        <footer className="footer">The Rolling Scopes School, 2024</footer>
+        <footer className="footer">
+          <div className='wrapper'>
+            The Rolling Scopes School, 2024
+          </div>
+        </footer>
       </>
     );
   }

@@ -27,7 +27,7 @@ const Search: React.FC<SearchProps> = ({
         onChange={onSearchChange}
         onBlur={handleBlur}
       />
-      <button onClick={onSearchSubmit}>Search</button>
+      <button className='button button_search' onClick={onSearchSubmit}>Search</button>
     </div>
   );
 };
