@@ -13,7 +13,7 @@ html {
 
 body {
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
 
   background-color: #0a0d11;
 }
@@ -44,7 +44,15 @@ main {
 }
 
 footer {
+  margin-top: auto;
   padding: 15px 0;
+}
+
+#root {
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+height: 100vh;
 }
 
 .wrapper {

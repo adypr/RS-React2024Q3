@@ -99,7 +99,7 @@ class App extends React.Component<Record<string, never>, MainState> {
         </header>
         <main>
           <div className='wrapper'>
-            {loading && <div>Loading...</div>}
+            {loading && <div className='loading'></div>}
             <div className="card-list">
               {data && !loading && (
                 <>{this.renderList(data.astronomicalObjects)}</>
