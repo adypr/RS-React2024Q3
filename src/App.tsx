@@ -85,7 +85,7 @@ class App extends React.Component<Record<string, never>, MainState> {
       <>
         <header className='header'>
           <div className='wrapper'>
-            <h1>Star Treck</h1>
+            <h1>Star Trek</h1>
             <h2>Astronomical Objects</h2>
             <div className="buttons">
               <Search
