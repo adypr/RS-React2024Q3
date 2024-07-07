@@ -1,9 +1,13 @@
-.header {
-  display: flex;
-  justify-content: space-between;
+.header, .footer {
+  background: url('/src/assets/bg.jpg') no-repeat;
+  background-size: cover;
 }
 
 .main {
   margin-bottom: auto;
   padding: 25px 8px;
+}
+
+header, footer {
+  color: #ffffff;
 }
