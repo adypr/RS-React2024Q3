@@ -59,7 +59,7 @@ class App extends React.Component<Record<string, never>, MainState> {
   };
 
   renderList = (data: AstronomicalObjects) => {
-    if (!data.length) return <div>Nothing found</div>;
+    if (!data.length) return <div className='no-found'>Nothing found</div>;
 
     return data.map((obj) => {
       return (

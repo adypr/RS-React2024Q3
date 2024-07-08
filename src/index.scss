@@ -71,6 +71,10 @@ height: 100vh;
   display: flex;
   justify-content: space-between;
   padding: 15px 0;
+
+  & input {
+    color: #0a0d11;
+  }
 }
 
 .card-list {
@@ -130,5 +134,12 @@ height: 100vh;
 
   text-align: center;
 
+  color: #ffffff;
+}
+
+.no-found {
+  font-weight: 600;
+  font-size: 18px;
+  
   color: #ffffff;
 }
