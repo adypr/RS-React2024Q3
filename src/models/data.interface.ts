@@ -11,8 +11,8 @@ export type AstronomicalObject = {
 export type AstronomicalObjects = AstronomicalObject[];
 
 export type Page = {
-  firstPage: boolean;
-  lastPage: boolean;
+  firstPage: boolean | null;
+  lastPage: boolean | null;
   numberOfElements: number;
   pageNumber: number;
   pageSize: number;

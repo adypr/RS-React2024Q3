@@ -19,3 +19,30 @@ header, footer {
 
   background: url('/src/assets/ripples.svg') no-repeat center;
 }
+
+.content {
+  display: flex;
+  justify-content: space-between;
+  min-height: 100vh;
+}
+
+.left-section {
+  flex-shrink: 0;
+  width: 65%;
+
+  @media (max-width: 1110px) {
+    width: 50%;
+  }
+}
+
+.right-section {
+  width: 32%;
+
+  color: #ffffff;
+
+background-color: #b3a68e;
+
+  @media (max-width: 1110px) {
+    width: 50%;
+  }
+}
