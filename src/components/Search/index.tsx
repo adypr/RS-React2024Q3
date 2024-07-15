@@ -1,9 +1,9 @@
-import React, { ChangeEvent } from 'react';
+import React from 'react';
 import './Search.scss';
 
 interface SearchProps {
   searching: string;
-  onSearchChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  onSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onSearchSubmit: () => void;
 }
 
@@ -12,22 +12,12 @@ const Search: React.FC<SearchProps> = ({
   onSearchChange,
   onSearchSubmit,
 }) => {
-  const handleBlur = () => {
-    if (!searching.trim()) {
-      localStorage.removeItem('searching');
-    }
-  };
-
   return (
     <div>
-      <input
-        type="text"
-        placeholder="Search by name"
-        value={searching}
-        onChange={onSearchChange}
-        onBlur={handleBlur}
-      />
-      <button className='button button_search' onClick={onSearchSubmit}>Search</button>
+      <input type="text" value={searching} onChange={onSearchChange} />
+      <button className="button button_search" onClick={onSearchSubmit}>
+        Search
+      </button>
     </div>
   );
 };

@@ -9,6 +9,11 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
+    "types": ["@testing-library/jest-dom", "jest", "node"],
+    "baseUrl": ".",
+    "paths": {
+      "*": ["node_modules/*"]
+    },
 
     /* Bundler mode */
     "moduleResolution": "Node",
@@ -24,6 +29,8 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
+  "include": [
+    "src",
+    "src/@types/jest-dom.d.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
