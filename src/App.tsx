@@ -200,21 +200,6 @@ const App: React.FC = () => {
     }
   }, [fetchData, currentPage, searchQuery]);
 
-  useEffect(() => {
-    const handleDocumentClick = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      if (!target.closest('.right-section') && !target.closest('.card')) {
-        closeDetails();
-      }
-    };
-
-    document.addEventListener('click', handleDocumentClick);
-
-    return () => {
-      document.removeEventListener('click', handleDocumentClick);
-    };
-  }, [closeDetails]);
-
   const { data, loading, emulateError, selectedItem, rightSectionLoading } =
     state;
 
