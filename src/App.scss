@@ -1,0 +1,100 @@
+.header,
+.footer {
+  background: url('/src/assets/bg.jpg') no-repeat;
+  background-size: cover;
+}
+
+.main {
+  margin-bottom: auto;
+  padding: 25px 8px;
+}
+
+header,
+footer {
+  color: #ffffff;
+}
+
+.loading {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+
+  background: url('/src/assets/ripples.svg') no-repeat center;
+}
+
+.content {
+  display: flex;
+  justify-content: space-between;
+  min-height: 90vh;
+}
+
+.left-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 40%;
+}
+
+.right-section {
+  width: 30%;
+
+  color: #ffffff;
+
+  background-color: #beb7a9;
+
+  & img {
+    padding: 15px;
+  }
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+
+  button {
+    margin: 0 5px;
+    padding: 5px 10px;
+
+    color: #ffffff;
+
+    background: none;
+    border: 1px solid #dddddd;
+    cursor: pointer;
+
+    &.active {
+      color: #a73f2d;
+
+      border-color: #a73f2d;
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+  }
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  & button {
+    width: fit-content;
+    padding: 5px;
+
+    font-weight: 600;
+
+    background-color: #a73f2d;
+    border: 1px solid #000000;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #dfa69c;
+
+      transition: all ease-in-out 0.2s;
+    }
+  }
+}
