@@ -11,15 +11,13 @@ const Search: React.FC<SearchProps> = ({
   searching,
   onSearchChange,
   onSearchSubmit,
-}) => {
-  return (
-    <div>
-      <input type="text" value={searching} onChange={onSearchChange} />
-      <button className="button button_search" onClick={onSearchSubmit}>
-        Search
-      </button>
-    </div>
-  );
-};
+}) => (
+  <div className="search">
+    <input type="text" value={searching} onChange={onSearchChange} />
+    <button className="button search__button" onClick={onSearchSubmit}>
+      Search
+    </button>
+  </div>
+);
 
 export default Search;
