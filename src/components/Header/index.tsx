@@ -1,20 +1,17 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Search from '../Search';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
 
 interface HeaderProps {
-  searching: string;
-  onSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onEmulateError: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({
-  searching,
-  onSearchChange,
-  onEmulateError,
-}) => {
+const Header: React.FC<HeaderProps> = ({ onEmulateError }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const searching = useSelector((state: RootState) => state.search.query);
 
   const query = new URLSearchParams(location.search);
 
@@ -35,11 +32,7 @@ const Header: React.FC<HeaderProps> = ({
         <h1>Star Trek</h1>
         <h2>Astronomical Objects</h2>
         <div className="buttons">
-          <Search
-            searching={searching}
-            onSearchChange={onSearchChange}
-            onSearchSubmit={handleSearchSubmit}
-          />
+          <Search onSearchSubmit={handleSearchSubmit} />
           <button className="button" onClick={onEmulateError}>
             Emulate Error
           </button>

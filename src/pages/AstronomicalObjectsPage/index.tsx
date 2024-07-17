@@ -49,11 +49,19 @@ const AstronomicalObjectsPage: React.FC = () => {
   }, [searchQuery, currentPage]);
 
   useEffect(() => {
-    const savedData = localStorage.getItem('data');
-    if (savedData && searchQuery === '' && currentPage === 1) {
-      setState((prevState) => ({ ...prevState, data: JSON.parse(savedData) }));
-    } else {
+    if (currentPage === 1) {
+      localStorage.removeItem('data');
       fetchDataCallback();
+    } else {
+      const savedData = localStorage.getItem('data');
+      if (savedData && searchQuery === '' && currentPage === 1) {
+        setState((prevState) => ({
+          ...prevState,
+          data: JSON.parse(savedData),
+        }));
+      } else {
+        fetchDataCallback();
+      }
     }
   }, [fetchDataCallback, currentPage, searchQuery]);
 
