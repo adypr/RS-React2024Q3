@@ -12,6 +12,7 @@ import {
   setData,
   selectItem,
   setRightSectionLoading,
+  loadSelection,
 } from '../../store/slices/astronomicalObjectsSlice';
 
 const AstronomicalObjectsPage: React.FC = () => {
@@ -29,10 +30,8 @@ const AstronomicalObjectsPage: React.FC = () => {
   );
   const searchQuery = useMemo(() => query.get('name') || '', [query]);
 
-  const { data, isLoading, isFetching } = useFetchAstronomicalObjectsQuery({
-    currentPage,
-    searchQuery,
-  });
+  const { data, error, isLoading, isFetching } =
+    useFetchAstronomicalObjectsQuery({ currentPage, searchQuery });
 
   const storedData = useSelector(
     (state: RootState) => state.astronomicalObjects.data
@@ -46,6 +45,10 @@ const AstronomicalObjectsPage: React.FC = () => {
   const selectedItems = useSelector(
     (state: RootState) => state.astronomicalObjects.selectedItems
   );
+
+  useEffect(() => {
+    dispatch(loadSelection());
+  }, [dispatch]);
 
   useEffect(() => {
     if (data) {
@@ -99,7 +102,10 @@ const AstronomicalObjectsPage: React.FC = () => {
           {(isLoading || isFetching) && (
             <div className="loading">Loading...</div>
           )}
-          {storedData && !isLoading && (
+          {error && (
+            <div className="error">An error occurred while fetching data.</div>
+          )}
+          {storedData && !isLoading && !isFetching && (
             <CardList
               data={storedData.astronomicalObjects}
               onItemClick={handleItemClick}

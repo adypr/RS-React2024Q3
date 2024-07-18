@@ -17,6 +17,15 @@ const initialState: AstronomicalObjectsState = {
   selectedItems: [],
 };
 
+const saveToLocalStorage = (selectedItems: AstronomicalObject[]) => {
+  localStorage.setItem('selectedItems', JSON.stringify(selectedItems));
+};
+
+const loadFromLocalStorage = (): AstronomicalObject[] => {
+  const savedItems = localStorage.getItem('selectedItems');
+  return savedItems ? JSON.parse(savedItems) : [];
+};
+
 const astronomicalObjectsSlice = createSlice({
   name: 'astronomicalObjects',
   initialState,
@@ -50,6 +59,7 @@ const astronomicalObjectsSlice = createSlice({
             (obj) => obj.uid !== action.payload
           );
         }
+        saveToLocalStorage(state.selectedItems);
       }
     },
     clearSelection: (state) => {
@@ -59,6 +69,10 @@ const astronomicalObjectsSlice = createSlice({
           obj.isChecked = false;
         });
       }
+      localStorage.removeItem('selectedItems');
+    },
+    loadSelection: (state) => {
+      state.selectedItems = loadFromLocalStorage();
     },
   },
 });
@@ -69,6 +83,7 @@ export const {
   setRightSectionLoading,
   toggleItemCheck,
   clearSelection,
+  loadSelection,
 } = astronomicalObjectsSlice.actions;
 
 export default astronomicalObjectsSlice.reducer;
