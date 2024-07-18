@@ -8,7 +8,13 @@
     "baseUrl": ".",
     "paths": {
       "*": ["node_modules/*"]
-    }
+    },
+    "types": ["jest", "node"],
+    "typeRoots": [
+      "@testing-library/jest-dom",
+      "./node_modules/@types",
+      "./src/types"
+    ]
   },
   "include": ["vite.config.ts", "src/@types/jest-dom.d.ts"]
 }

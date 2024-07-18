@@ -98,3 +98,15 @@ footer {
     }
   }
 }
+
+.loading-file {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+
+  font-weight: bold;
+  font-size: 18px;
+  color: #555555;
+
+  transform: translate(-50%, -50%);
+}

@@ -52,10 +52,23 @@ const astronomicalObjectsSlice = createSlice({
         }
       }
     },
+    clearSelection: (state) => {
+      state.selectedItems = [];
+      if (state.data) {
+        state.data.astronomicalObjects.forEach((obj) => {
+          obj.isChecked = false;
+        });
+      }
+    },
   },
 });
 
-export const { setData, selectItem, setRightSectionLoading, toggleItemCheck } =
-  astronomicalObjectsSlice.actions;
+export const {
+  setData,
+  selectItem,
+  setRightSectionLoading,
+  toggleItemCheck,
+  clearSelection,
+} = astronomicalObjectsSlice.actions;
 
 export default astronomicalObjectsSlice.reducer;

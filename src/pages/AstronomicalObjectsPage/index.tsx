@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import CardList from '../../components/CardList';
 import Pagination from '../../components/Pagination';
 import Details from '../../components/Details';
+import FooterMenu from '../../components/FooterMenu';
 import { AstronomicalObject } from '../../models/data.interface';
 import { useFetchAstronomicalObjectsQuery } from '../../services/api';
 import { RootState } from '../../store/store';
@@ -28,7 +29,7 @@ const AstronomicalObjectsPage: React.FC = () => {
   );
   const searchQuery = useMemo(() => query.get('name') || '', [query]);
 
-  const { data, isLoading } = useFetchAstronomicalObjectsQuery({
+  const { data, isLoading, isFetching } = useFetchAstronomicalObjectsQuery({
     currentPage,
     searchQuery,
   });
@@ -41,6 +42,9 @@ const AstronomicalObjectsPage: React.FC = () => {
   );
   const rightSectionLoading = useSelector(
     (state: RootState) => state.astronomicalObjects.rightSectionLoading
+  );
+  const selectedItems = useSelector(
+    (state: RootState) => state.astronomicalObjects.selectedItems
   );
 
   useEffect(() => {
@@ -92,7 +96,9 @@ const AstronomicalObjectsPage: React.FC = () => {
     <div className="wrapper">
       <div className="content">
         <div className="left-section">
-          {isLoading && <div className="loading"></div>}
+          {(isLoading || isFetching) && (
+            <div className="loading">Loading...</div>
+          )}
           {storedData && !isLoading && (
             <CardList
               data={storedData.astronomicalObjects}
@@ -106,12 +112,13 @@ const AstronomicalObjectsPage: React.FC = () => {
           />
         </div>
         <div className="right-section">
-          {rightSectionLoading && <div className="loading"></div>}
+          {rightSectionLoading && <div className="loading">Loading...</div>}
           {!rightSectionLoading && selectedItem && (
             <Details item={selectedItem} onClose={closeDetails} />
           )}
         </div>
       </div>
+      {selectedItems.length > 0 && <FooterMenu />}
     </div>
   );
 };
