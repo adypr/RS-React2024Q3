@@ -3,22 +3,10 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import CardList from '../../components/CardList';
 import Pagination from '../../components/Pagination';
 import Details from '../../components/Details';
-import { AstronomicalObject, mainData } from '../../models/data.interface';
-import { fetchData } from '../../services/api';
+import { AstronomicalObject } from '../../models/data.interface';
+import { useFetchAstronomicalObjectsQuery } from '../../services/api';
 
 const AstronomicalObjectsPage: React.FC = () => {
-  const [state, setState] = useState<{
-    data: mainData | null;
-    loading: boolean;
-    selectedItem: AstronomicalObject | null;
-    rightSectionLoading: boolean;
-  }>({
-    data: null,
-    loading: false,
-    selectedItem: null,
-    rightSectionLoading: false,
-  });
-
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -32,38 +20,15 @@ const AstronomicalObjectsPage: React.FC = () => {
   );
   const searchQuery = useMemo(() => query.get('name') || '', [query]);
 
-  const fetchDataCallback = useCallback(() => {
-    setState((prevState) => ({ ...prevState, loading: true }));
+  const { data, isLoading } = useFetchAstronomicalObjectsQuery({
+    currentPage,
+    searchQuery,
+  });
 
-    fetchData(currentPage, searchQuery)
-      .then((data: mainData) => {
-        setTimeout(() => {
-          setState((prevState) => ({ ...prevState, data, loading: false }));
-          localStorage.setItem('data', JSON.stringify(data));
-        }, 500);
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-        setState((prevState) => ({ ...prevState, loading: false }));
-      });
-  }, [searchQuery, currentPage]);
-
-  useEffect(() => {
-    if (currentPage === 1) {
-      localStorage.removeItem('data');
-      fetchDataCallback();
-    } else {
-      const savedData = localStorage.getItem('data');
-      if (savedData && searchQuery === '' && currentPage === 1) {
-        setState((prevState) => ({
-          ...prevState,
-          data: JSON.parse(savedData),
-        }));
-      } else {
-        fetchDataCallback();
-      }
-    }
-  }, [fetchDataCallback, currentPage, searchQuery]);
+  const [selectedItem, setSelectedItem] = useState<AstronomicalObject | null>(
+    null
+  );
+  const [rightSectionLoading, setRightSectionLoading] = useState(false);
 
   const handlePageChange = (newPage: number) => {
     query.set('page', newPage.toString());
@@ -71,21 +36,18 @@ const AstronomicalObjectsPage: React.FC = () => {
   };
 
   const handleItemClick = (item: AstronomicalObject) => {
-    setState((prevState) => ({
-      ...prevState,
-      selectedItem: item,
-      rightSectionLoading: true,
-    }));
+    setSelectedItem(item);
+    setRightSectionLoading(true);
     query.set('details', item.uid);
     navigate({ search: query.toString() });
 
     setTimeout(() => {
-      setState((prevState) => ({ ...prevState, rightSectionLoading: false }));
+      setRightSectionLoading(false);
     }, 500);
   };
 
   const closeDetails = useCallback(() => {
-    setState((prevState) => ({ ...prevState, selectedItem: null }));
+    setSelectedItem(null);
     query.delete('details');
     navigate({ search: query.toString() });
   }, [navigate, query]);
@@ -107,14 +69,12 @@ const AstronomicalObjectsPage: React.FC = () => {
     };
   }, [handleClickOutside]);
 
-  const { data, loading, selectedItem, rightSectionLoading } = state;
-
   return (
     <div className="wrapper">
       <div className="content">
         <div className="left-section">
-          {loading && <div className="loading"></div>}
-          {data && !loading && (
+          {isLoading && <div className="loading"></div>}
+          {data && !isLoading && (
             <CardList
               data={data.astronomicalObjects}
               onItemClick={handleItemClick}

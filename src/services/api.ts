@@ -1,16 +1,32 @@
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { mainData } from '../models/data.interface';
 
-export const fetchData = (
-  currentPage: number,
-  searchQuery: string
-): Promise<mainData> => {
-  let apiUrl = `https://stapi.co/api/v2/rest/astronomicalObject/search?pageNumber=${currentPage - 1}&pageSize=10`;
-  if (searchQuery) {
-    apiUrl += `&name=${searchQuery}`;
-  }
+export const api = createApi({
+  reducerPath: 'api',
+  baseQuery: fetchBaseQuery({ baseUrl: 'https://stapi.co/api/v2/rest/' }),
+  endpoints: (builder) => ({
+    fetchAstronomicalObjects: builder.query<
+      mainData,
+      { currentPage: number; searchQuery: string }
+    >({
+      query: ({ currentPage, searchQuery }) => {
+        const params = new URLSearchParams({
+          pageNumber: (currentPage - 1).toString(),
+          pageSize: '10',
+        });
+        if (searchQuery) {
+          params.append('name', searchQuery);
+        }
+        return {
+          url: `astronomicalObject/search?${params.toString()}`,
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        };
+      },
+    }),
+  }),
+});
 
-  return fetch(apiUrl, {
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    method: 'POST',
-  }).then((response) => response.json());
-};
+export const { useFetchAstronomicalObjectsQuery } = api;
