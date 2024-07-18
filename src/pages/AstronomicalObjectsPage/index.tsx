@@ -1,14 +1,22 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useEffect, useCallback, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import CardList from '../../components/CardList';
 import Pagination from '../../components/Pagination';
 import Details from '../../components/Details';
 import { AstronomicalObject } from '../../models/data.interface';
 import { useFetchAstronomicalObjectsQuery } from '../../services/api';
+import { RootState } from '../../store/store';
+import {
+  setData,
+  selectItem,
+  setRightSectionLoading,
+} from '../../store/slices/astronomicalObjectsSlice';
 
 const AstronomicalObjectsPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
 
   const query = useMemo(
     () => new URLSearchParams(location.search),
@@ -25,10 +33,21 @@ const AstronomicalObjectsPage: React.FC = () => {
     searchQuery,
   });
 
-  const [selectedItem, setSelectedItem] = useState<AstronomicalObject | null>(
-    null
+  const storedData = useSelector(
+    (state: RootState) => state.astronomicalObjects.data
   );
-  const [rightSectionLoading, setRightSectionLoading] = useState(false);
+  const selectedItem = useSelector(
+    (state: RootState) => state.astronomicalObjects.selectedItem
+  );
+  const rightSectionLoading = useSelector(
+    (state: RootState) => state.astronomicalObjects.rightSectionLoading
+  );
+
+  useEffect(() => {
+    if (data) {
+      dispatch(setData(data));
+    }
+  }, [data, dispatch]);
 
   const handlePageChange = (newPage: number) => {
     query.set('page', newPage.toString());
@@ -36,21 +55,21 @@ const AstronomicalObjectsPage: React.FC = () => {
   };
 
   const handleItemClick = (item: AstronomicalObject) => {
-    setSelectedItem(item);
-    setRightSectionLoading(true);
+    dispatch(selectItem(item));
+    dispatch(setRightSectionLoading(true));
     query.set('details', item.uid);
     navigate({ search: query.toString() });
 
     setTimeout(() => {
-      setRightSectionLoading(false);
+      dispatch(setRightSectionLoading(false));
     }, 500);
   };
 
   const closeDetails = useCallback(() => {
-    setSelectedItem(null);
+    dispatch(selectItem(null));
     query.delete('details');
     navigate({ search: query.toString() });
-  }, [navigate, query]);
+  }, [navigate, query, dispatch]);
 
   const handleClickOutside = useCallback(
     (event: MouseEvent) => {
@@ -74,15 +93,15 @@ const AstronomicalObjectsPage: React.FC = () => {
       <div className="content">
         <div className="left-section">
           {isLoading && <div className="loading"></div>}
-          {data && !isLoading && (
+          {storedData && !isLoading && (
             <CardList
-              data={data.astronomicalObjects}
+              data={storedData.astronomicalObjects}
               onItemClick={handleItemClick}
             />
           )}
           <Pagination
             currentPage={currentPage}
-            totalPages={data ? data.page.totalPages : 1}
+            totalPages={storedData ? storedData.page.totalPages : 1}
             onPageChange={handlePageChange}
           />
         </div>

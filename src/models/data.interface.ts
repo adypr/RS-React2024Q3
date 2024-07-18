@@ -6,6 +6,7 @@ export type AstronomicalObject = {
   };
   name: string;
   uid: string;
+  isChecked?: boolean;
 };
 
 export type AstronomicalObjects = AstronomicalObject[];
