@@ -1,0 +1,85 @@
+.popup-menu {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+
+  width: 100%;
+  padding: 1em;
+
+  background-color: #ffffff;
+  border-top: 1px solid #dddddd;
+  box-shadow: 0 -2px 10px rgb(0 0 0 / 0.1);
+
+  &__content {
+    max-width: 600px;
+    margin: 0 auto;
+
+    text-align: center;
+  }
+
+  &__buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1em;
+  }
+
+  &__loading {
+    margin-top: 1em;
+
+    color: #0000ff;
+  }
+
+  &__error {
+    margin-top: 1em;
+
+    color: #ff0000;
+  }
+
+  &__progress-bar {
+    position: relative;
+
+    width: 100%;
+    height: 20px;
+    margin-top: 1em;
+    overflow: hidden;
+
+    background-color: #e0e0e0;
+  }
+
+  &__progress {
+    height: 100%;
+
+    line-height: 20px;
+    text-align: center;
+    color: #ffffff;
+
+    background-color: #0000ff;
+  }
+
+  &__progress-bar {
+    height: 5px;
+    margin-top: 10px;
+    overflow: hidden;
+
+    background: #f3f3f3;
+    border-radius: 3px;
+  }
+
+  &__progress {
+    width: 100%;
+    height: 100%;
+
+    background: #4caf50;
+
+    animation: loadProgress 2s linear infinite;
+  }
+}
+
+@keyframes loadProgress {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 100%;
+  }
+}

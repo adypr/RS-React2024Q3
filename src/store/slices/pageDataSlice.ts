@@ -1,31 +1,25 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AstronomicalObject, mainData } from '../../models/data.interface';
 
-interface AstronomicalObjectsState {
+interface PageDataState {
   data: mainData | null;
-  loading: boolean;
-  selectedItem: AstronomicalObject | null;
-  rightSectionLoading: boolean;
   selectedItems: AstronomicalObject[];
   isDownloading: boolean;
   downloadProgress: number;
 }
 
-const initialState: AstronomicalObjectsState = {
+const initialState: PageDataState = {
   data: null,
-  loading: false,
-  selectedItem: null,
-  rightSectionLoading: false,
   selectedItems: [],
   isDownloading: false,
   downloadProgress: 0,
 };
 
-const astronomicalObjectsSlice = createSlice({
-  name: 'astronomicalObjects',
+const pageDataSlice = createSlice({
+  name: 'pageData',
   initialState,
   reducers: {
-    setData: (state, action: PayloadAction<mainData>) => {
+    setPageData: (state, action: PayloadAction<mainData>) => {
       const updatedObjects = action.payload.astronomicalObjects.map((obj) => {
         const isChecked = state.selectedItems.some(
           (item) => item.uid === obj.uid
@@ -33,13 +27,6 @@ const astronomicalObjectsSlice = createSlice({
         return { ...obj, isChecked };
       });
       state.data = { ...action.payload, astronomicalObjects: updatedObjects };
-    },
-    selectItem: (state, action: PayloadAction<AstronomicalObject | null>) => {
-      state.selectedItem = action.payload;
-      state.rightSectionLoading = action.payload !== null;
-    },
-    setRightSectionLoading: (state, action: PayloadAction<boolean>) => {
-      state.rightSectionLoading = action.payload;
     },
     toggleItemCheck: (state, action: PayloadAction<string>) => {
       const item = state.data?.astronomicalObjects.find(
@@ -71,13 +58,11 @@ const astronomicalObjectsSlice = createSlice({
 });
 
 export const {
-  setData,
-  selectItem,
-  setRightSectionLoading,
+  setPageData,
   toggleItemCheck,
   clearSelectedItems,
   setDownloading,
   setDownloadProgress,
-} = astronomicalObjectsSlice.actions;
+} = pageDataSlice.actions;
 
-export default astronomicalObjectsSlice.reducer;
+export default pageDataSlice.reducer;

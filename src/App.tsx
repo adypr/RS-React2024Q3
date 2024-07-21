@@ -1,17 +1,11 @@
 import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Header from './components/Header';
-import useSearchLs from './hooks/useSearchLs';
 import './App.scss';
+import { ThemeProvider } from './context/ThemeContext';
 
-const App: React.FC = () => {
-  const [searching, setSearching] = useSearchLs('');
+const AppContent: React.FC = () => {
   const [emulateError, setEmulateError] = useState(false);
-
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setSearching(value);
-  };
 
   const handleThrowError = () => {
     setEmulateError(true);
@@ -23,11 +17,7 @@ const App: React.FC = () => {
 
   return (
     <>
-      <Header
-        searching={searching}
-        onSearchChange={handleSearchChange}
-        onEmulateError={handleThrowError}
-      />
+      <Header onEmulateError={handleThrowError} />
       <main>
         <Outlet />
       </main>
@@ -37,5 +27,11 @@ const App: React.FC = () => {
     </>
   );
 };
+
+const App: React.FC = () => (
+  <ThemeProvider>
+    <AppContent />
+  </ThemeProvider>
+);
 
 export default App;

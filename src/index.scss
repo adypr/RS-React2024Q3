@@ -143,3 +143,71 @@ footer {
 
   color: #ffffff;
 }
+
+.light {
+  --background-color: #ffffff;
+  --text-color: #000000;
+  --button-background: #f0f0f0;
+  --button-text: #000000;
+  --section-background: #e0e0e0;
+}
+
+.dark {
+  --background-color: #000000;
+  --text-color: #ffffff;
+  --button-background: #333333;
+  --button-text: #ffffff;
+  --section-background: #444444;
+}
+
+body {
+  color: var(--text-color);
+
+  background-color: var(--background-color);
+
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+}
+
+button {
+  padding: 10px 20px;
+
+  color: var(--button-text);
+
+  background-color: var(--button-background);
+  border: none;
+  cursor: pointer;
+
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+}
+
+.wrapper {
+  padding: 20px;
+}
+
+.content {
+  display: flex;
+}
+
+.left-section,
+.right-section {
+  margin: 10px;
+  padding: 20px;
+
+  background-color: var(--section-background);
+  border-radius: 8px;
+
+  transition: background-color 0.3s;
+}
+
+.loading,
+.error {
+  margin: 10px;
+  padding: 20px;
+
+  border: 1px solid var(--text-color);
+  border-radius: 8px;
+}

@@ -14,6 +14,7 @@ const searchSlice = createSlice({
   reducers: {
     setSearchQuery: (state, action: PayloadAction<string>) => {
       state.query = action.payload;
+      localStorage.setItem('searching', action.payload);
     },
   },
 });

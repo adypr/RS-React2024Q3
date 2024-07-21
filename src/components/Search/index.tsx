@@ -1,25 +1,35 @@
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../store/store';
+import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { setSearchQuery } from '../../store/slices/searchSlice';
 import './Search.scss';
 
 interface SearchProps {
-  onSearchSubmit: () => void;
+  onSearchSubmit: (query: string) => void;
+  initialSearch: string;
 }
 
-const Search: React.FC<SearchProps> = ({ onSearchSubmit }) => {
+const Search: React.FC<SearchProps> = ({ onSearchSubmit, initialSearch }) => {
+  const [localSearch, setLocalSearch] = useState<string>(initialSearch);
   const dispatch = useDispatch();
-  const searching = useSelector((state: RootState) => state.search.query);
+
+  useEffect(() => {
+    setLocalSearch(initialSearch);
+  }, [initialSearch]);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(setSearchQuery(event.target.value));
+    setLocalSearch(event.target.value);
+  };
+
+  const handleSearchSubmit = () => {
+    localStorage.setItem('searching', localSearch);
+    dispatch(setSearchQuery(localSearch));
+    onSearchSubmit(localSearch);
   };
 
   return (
     <div className="search">
-      <input type="text" value={searching} onChange={handleSearchChange} />
-      <button className="button search__button" onClick={onSearchSubmit}>
+      <input type="text" value={localSearch} onChange={handleSearchChange} />
+      <button className="button search__button" onClick={handleSearchSubmit}>
         Search
       </button>
     </div>
