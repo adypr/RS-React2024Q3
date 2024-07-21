@@ -57,7 +57,11 @@ const astronomicalObjectsSlice = createSlice({
       }
     },
     clearSelectedItems: (state) => {
-      state.selectedItems.forEach((item) => (item.isChecked = false));
+      if (state.data) {
+        state.data.astronomicalObjects.forEach((item) => {
+          item.isChecked = false;
+        });
+      }
       state.selectedItems = [];
     },
     setDownloading: (state, action: PayloadAction<boolean>) => {

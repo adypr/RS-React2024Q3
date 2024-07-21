@@ -5,6 +5,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import useTheme from '../../hooks/useTheme';
+import { setSearchQuery } from '../../store/slices/searchSlice';
 
 vi.mock('react-router-dom', () => ({
   useNavigate: vi.fn(),
@@ -55,5 +56,36 @@ describe('Header', () => {
     render(<Header onEmulateError={mockOnEmulateError} />);
     fireEvent.click(screen.getByText('Dark Mode'));
     expect(mockToggleTheme).toHaveBeenCalled();
+  });
+
+  it('submits search query when the search button is clicked', () => {
+    render(<Header onEmulateError={mockOnEmulateError} />);
+
+    fireEvent.change(screen.getByRole('textbox'), {
+      target: { value: 'Enterprise' },
+    });
+    fireEvent.click(screen.getByText('Search'));
+
+    expect(mockDispatch).toHaveBeenCalledWith(setSearchQuery('Enterprise'));
+    expect(mockNavigate).toHaveBeenCalledWith({
+      search: 'page=1&name=Enterprise',
+    });
+  });
+
+  it('loads initial search query from URL', () => {
+    (useLocation as unknown as jest.Mock).mockReturnValue({
+      search: '?name=Voyager',
+    });
+
+    render(<Header onEmulateError={mockOnEmulateError} />);
+
+    expect(screen.getByDisplayValue('Voyager')).toBeInTheDocument();
+  });
+
+  it('loads initial search query from localStorage', () => {
+    localStorage.setItem('searching', 'Discovery');
+    render(<Header onEmulateError={mockOnEmulateError} />);
+
+    expect(screen.getByDisplayValue('Discovery')).toBeInTheDocument();
   });
 });
