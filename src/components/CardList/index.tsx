@@ -1,17 +1,9 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  AstronomicalObjects,
-  AstronomicalObject,
-} from '../../models/data.interface';
+import { CardListProps } from '../../models/data.interface';
 import { toggleItemCheck } from '../../store/slices/pageDataSlice';
 import { RootState } from '../../store/store';
 import './CardList.scss';
-
-interface CardListProps {
-  data: AstronomicalObjects;
-  onItemClick: (item: AstronomicalObject) => void;
-}
 
 const CardList: React.FC<CardListProps> = ({ data, onItemClick }) => {
   const dispatch = useDispatch();

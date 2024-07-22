@@ -1,8 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-interface SearchState {
-  query: string;
-}
+import { SearchState } from '../../models/data.interface';
 
 const initialState: SearchState = {
   query: '',

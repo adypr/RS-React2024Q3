@@ -1,11 +1,5 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
-
-export type Theme = 'light' | 'dark';
-
-export interface ThemeContextType {
-  theme: Theme;
-  toggleTheme: () => void;
-}
+import { Theme, ThemeContextType } from '../models/data.interface';
 
 export const ThemeContext = createContext<ThemeContextType | undefined>(
   undefined

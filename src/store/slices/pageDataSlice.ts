@@ -1,12 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AstronomicalObject, mainData } from '../../models/data.interface';
-
-interface PageDataState {
-  data: mainData | null;
-  selectedItems: AstronomicalObject[];
-  isDownloading: boolean;
-  downloadProgress: number;
-}
+import { PageDataState, mainData } from '../../models/data.interface';
 
 const initialState: PageDataState = {
   data: null,

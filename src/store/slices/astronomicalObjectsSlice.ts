@@ -1,15 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AstronomicalObject, mainData } from '../../models/data.interface';
-
-interface AstronomicalObjectsState {
-  data: mainData | null;
-  loading: boolean;
-  selectedItem: AstronomicalObject | null;
-  rightSectionLoading: boolean;
-  selectedItems: AstronomicalObject[];
-  isDownloading: boolean;
-  downloadProgress: number;
-}
+import {
+  AstronomicalObject,
+  mainData,
+  AstronomicalObjectsState,
+} from '../../models/data.interface';
 
 const initialState: AstronomicalObjectsState = {
   data: null,

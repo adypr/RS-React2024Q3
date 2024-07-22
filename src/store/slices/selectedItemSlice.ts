@@ -1,10 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AstronomicalObject } from '../../models/data.interface';
-
-interface SelectedItemState {
-  item: AstronomicalObject | null;
-  loading: boolean;
-}
+import {
+  AstronomicalObject,
+  SelectedItemState,
+} from '../../models/data.interface';
 
 const initialState: SelectedItemState = {
   item: null,

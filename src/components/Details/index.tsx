@@ -1,10 +1,5 @@
 import React from 'react';
-import { AstronomicalObject } from '../../models/data.interface';
-
-interface DetailsProps {
-  item: AstronomicalObject;
-  onClose: () => void;
-}
+import { DetailsProps } from '../../models/data.interface';
 
 const Details: React.FC<DetailsProps> = ({ item, onClose }) => (
   <div className="details">

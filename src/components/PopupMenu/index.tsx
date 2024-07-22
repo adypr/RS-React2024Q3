@@ -1,14 +1,6 @@
 import React from 'react';
 import './PopupMenu.scss';
-import { AstronomicalObject } from '../../models/data.interface';
-
-interface PopupMenuProps {
-  selectedItems: AstronomicalObject[];
-  onUnselectAll: () => void;
-  onDownload: () => void;
-  isDownloading: boolean;
-  downloadProgress: number;
-}
+import { PopupMenuProps } from '../../models/data.interface';
 
 const PopupMenu: React.FC<PopupMenuProps> = ({
   selectedItems,

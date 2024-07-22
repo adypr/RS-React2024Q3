@@ -4,12 +4,7 @@ import { Provider } from 'react-redux';
 import configureStore, { MockStoreEnhanced } from 'redux-mock-store';
 import Search from '../../components/Search';
 import { setSearchQuery } from '../../store/slices/searchSlice';
-
-interface RootState {
-  search: {
-    query: string;
-  };
-}
+import { RootState } from '../../models/data.interface';
 
 const mockStore = configureStore<RootState>();
 

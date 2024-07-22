@@ -4,10 +4,7 @@ import { useDispatch } from 'react-redux';
 import { setSearchQuery } from '../../store/slices/searchSlice';
 import useTheme from '../../hooks/useTheme';
 import Search from '../Search';
-
-interface HeaderProps {
-  onEmulateError: () => void;
-}
+import { HeaderProps } from '../../models/data.interface';
 
 const Header: React.FC<HeaderProps> = ({ onEmulateError }) => {
   const navigate = useNavigate();

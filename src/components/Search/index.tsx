@@ -2,11 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { setSearchQuery } from '../../store/slices/searchSlice';
 import './Search.scss';
-
-interface SearchProps {
-  onSearchSubmit: (query: string) => void;
-  initialSearch: string;
-}
+import { SearchProps } from '../../models/data.interface';
 
 const Search: React.FC<SearchProps> = ({ onSearchSubmit, initialSearch }) => {
   const [localSearch, setLocalSearch] = useState<string>(initialSearch);

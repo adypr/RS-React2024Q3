@@ -2,10 +2,10 @@ import { render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 import { configureStore } from '@reduxjs/toolkit';
-import AstronomicalObjectsPage from '../../pages/AstronomicalObjectsPage';
+import AstronomicalObjectsPage from '../../../pages/AstronomicalObjectsPage';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import rootReducer from '../../store/reducers';
-import { api } from '../../services/api';
+import rootReducer from '../../../store/reducers';
+import { api } from '../../../services/api';
 
 describe('AstronomicalObjectsPage Component', () => {
   let store: ReturnType<typeof configureStore>;
