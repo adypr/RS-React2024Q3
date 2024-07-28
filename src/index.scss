@@ -1,0 +1,263 @@
+* {
+  box-sizing: border-box;
+
+  font-family: Manrope, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+
+  background-color: var(--primary-color);
+}
+
+body {
+  align-items: center;
+  min-height: 100vh;
+
+  background-color: var(--background-color-dark);
+}
+
+ul {
+  padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul,
+li {
+  margin: 0;
+}
+.dark {
+  & h1,
+  & h2 {
+    text-shadow:
+      1px 1px 2px var(--text-color-light),
+      0 0 1em var(--text-color-light);
+  }
+}
+
+input {
+  padding: 7px 23px;
+}
+
+main {
+  margin-bottom: auto;
+}
+
+footer {
+  margin-top: auto;
+  padding: 15px 0;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  max-width: 1280px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 2rem;
+
+  text-align: center;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 0;
+
+  & input {
+    color: var(--background-color-dark);
+  }
+}
+
+input[type='checkbox'] {
+  position: relative;
+
+  width: 20px;
+  height: 20px;
+  margin: 0;
+
+  background-color: var(--background-color-light);
+  border: 2px solid var(--border-color);
+  border-radius: 4px;
+  cursor: pointer;
+
+  transition:
+    background-color 0.3s,
+    border-color 0.3s;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  &:hover {
+    background-color: var(--background-color-dark);
+  }
+
+  &:checked {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+  }
+
+  &:checked::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    width: 8px;
+    height: 12px;
+
+    border: solid var(--text-color-light);
+    border-width: 0 2px 2px 0;
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+}
+
+.card-list {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: minmax(100px, auto);
+  justify-items: center;
+
+  @media (max-width: 1110px) {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  width: 250px;
+  height: 100%;
+  padding: 5px;
+
+  background-color: var(--background-color-light);
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  gap: 5px;
+
+  &__title {
+    cursor: pointer;
+
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+      color: var(--accent-color);
+
+      transform: scale(1.1);
+    }
+  }
+}
+
+.button {
+  padding: 9px 23px;
+
+  font-weight: bold;
+  font-size: 15px;
+  font-family: Arial;
+  text-decoration: none;
+  text-shadow: 0px -1px 0px var(--text-color-dark);
+
+  background-color: var(--accent-color);
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--button-hover);
+
+    transition: all ease-in-out 0.2s;
+  }
+}
+
+.error-message {
+  margin-top: 5vh;
+
+  font-weight: 600;
+  font-size: 18px;
+  text-align: center;
+  color: var(--text-color);
+}
+
+.no-found {
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--text-color);
+}
+
+.light {
+  --background-color: var(--background-color-light);
+  --text-color: var(--text-color-dark);
+  --text-color-contrast: var(--primary-color);
+  --button-background: var(--button-background-light);
+  --button-text: var(--text-color-dark);
+  --section-background: var(--section-background-light);
+}
+
+.dark {
+  --background-color: var(--background-color-dark);
+  --text-color: var(--primary-color);
+  --text-color-contrast: var(--text-color-light);
+  --button-background: var(--button-background-dark);
+  --button-text: var(--text-color-light);
+  --section-background: var(--section-background-dark);
+}
+
+body {
+  background-color: var(--background-color);
+
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+}
+
+button {
+  padding: 10px 20px;
+
+  color: var(--button-text);
+
+  background-color: var(--button-background);
+  border: none;
+  cursor: pointer;
+
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+}
+
+.wrapper {
+  padding: 20px;
+}
+
+.left-section,
+.right-section {
+  margin: 10px;
+  padding: 20px;
+
+  background-color: var(--section-background);
+  border-radius: 8px;
+
+  transition: background-color 0.3s;
+}
+
+.loading,
+.error {
+  margin: 10px;
+  padding: 20px;
+
+  border-radius: 8px;
+}
