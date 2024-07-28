@@ -4,6 +4,13 @@ import { configDefaults } from 'vitest/config';
 
 export default defineConfig({
   plugins: [react()],
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `@import "src/base/variables.scss";`,
+      },
+    },
+  },
   test: {
     globals: true,
     environment: 'jsdom',

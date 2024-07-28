@@ -26,6 +26,7 @@ module.exports = {
       'vmax',
       's',
       'fr',
+      'deg',
     ],
     'color-named': 'never',
     'color-function-notation': 'modern',

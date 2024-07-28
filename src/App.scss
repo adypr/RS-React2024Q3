@@ -11,7 +11,7 @@
 
 header,
 footer {
-  color: #ffffff;
+  color: var(--text-color);
 }
 
 .loading {
@@ -26,21 +26,22 @@ footer {
   display: flex;
   justify-content: space-between;
   min-height: 90vh;
+
+  background-color: var(--text-color);
 }
 
 .left-section {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 40%;
 }
 
 .right-section {
   width: 30%;
 
-  color: #ffffff;
+  color: var(--text-color-contrast);
 
-  background-color: #beb7a9;
+  background-color: var(--background-color-light);
 
   & img {
     padding: 15px;
@@ -57,16 +58,16 @@ footer {
     margin: 0 5px;
     padding: 5px 10px;
 
-    color: #ffffff;
+    color: var(--text-color-contrast);
 
     background: none;
-    border: 1px solid #dddddd;
+    border: 1px solid var(--border-color);
     cursor: pointer;
 
     &.active {
-      color: #a73f2d;
+      color: var(--accent-color);
 
-      border-color: #a73f2d;
+      border-color: var(--accent-color);
     }
 
     &:disabled {
@@ -87,12 +88,12 @@ footer {
 
     font-weight: 600;
 
-    background-color: #a73f2d;
-    border: 1px solid #000000;
+    background-color: var(--accent-color);
+    border: 1px solid var(--border-color);
     cursor: pointer;
 
     &:hover {
-      background-color: #dfa69c;
+      background-color: var(--button-hover);
 
       transition: all ease-in-out 0.2s;
     }

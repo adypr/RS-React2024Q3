@@ -26,15 +26,17 @@ const PopupMenu: React.FC<PopupMenuProps> = ({
             {isDownloading ? 'Loading...' : 'Download'}
           </button>
         </div>
-        {isDownloading && (
-          <div className="popup-menu__progress-bar">
-            <div
-              className="popup-menu__progress"
-              role="progressbar"
-              style={{ width: `${downloadProgress}%` }}
-            ></div>
-          </div>
-        )}
+        <div
+          className={`popup-menu__progress-bar ${
+            isDownloading ? 'popup-menu__progress-bar--visible' : ''
+          }`}
+        >
+          <div
+            className="popup-menu__progress"
+            role="progressbar"
+            style={{ width: `${downloadProgress}%` }}
+          ></div>
+        </div>
       </div>
     </div>
   );
