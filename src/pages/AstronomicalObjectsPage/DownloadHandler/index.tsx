@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PopupMenu from '../../../components/PopupMenu';
 import {
@@ -10,6 +10,7 @@ import { RootState } from '../../../store/store';
 
 const DownloadHandler: React.FC = () => {
   const dispatch = useDispatch();
+  const downloadLinkRef = useRef<HTMLAnchorElement>(null);
 
   const selectedItems = useSelector(
     (state: RootState) => state.pageData.selectedItems
@@ -50,11 +51,12 @@ const DownloadHandler: React.FC = () => {
     const url = URL.createObjectURL(blob);
 
     setTimeout(() => {
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `${selectedItems.length}_astronomicalobjects.csv`;
-      link.click();
-      URL.revokeObjectURL(url);
+      if (downloadLinkRef.current) {
+        downloadLinkRef.current.href = url;
+        downloadLinkRef.current.download = `${selectedItems.length}_astronomicalobjects.csv`;
+        downloadLinkRef.current.click();
+        URL.revokeObjectURL(url);
+      }
       dispatch(setDownloading(false));
       dispatch(setDownloadProgress(100));
     }, 2000);
@@ -63,13 +65,18 @@ const DownloadHandler: React.FC = () => {
   return (
     <>
       {selectedItems.length > 0 && (
-        <PopupMenu
-          selectedItems={selectedItems}
-          onUnselectAll={handleUnselectAll}
-          onDownload={handleDownload}
-          isDownloading={isDownloading}
-          downloadProgress={downloadProgress}
-        />
+        <>
+          <PopupMenu
+            selectedItems={selectedItems}
+            onUnselectAll={handleUnselectAll}
+            onDownload={handleDownload}
+            isDownloading={isDownloading}
+            downloadProgress={downloadProgress}
+          />
+          <a ref={downloadLinkRef} style={{ display: 'none' }}>
+            Download
+          </a>
+        </>
       )}
     </>
   );

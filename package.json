@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "format:fix": "prettier . --write",
     "prepare": "husky install",
-    "test": "vitest --coverage"
+    "test": "vitest --coverage",
+    "clean": "rd /s /q node_modules dist"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": "npx eslint .",

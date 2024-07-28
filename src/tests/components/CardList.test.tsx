@@ -5,6 +5,7 @@ import CardList from '../../components/CardList';
 import { AstronomicalObject } from '../../models/data.interface';
 import { RootState } from '../../store/store';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { toggleItemCheck } from '../../store/slices/pageDataSlice';
 
 const mockStore = configureStore<RootState>();
 
@@ -137,5 +138,158 @@ describe('CardList Component', () => {
     fireEvent.click(screen.getByText(/Object 1/i));
 
     expect(onItemClick).toHaveBeenCalled();
+  });
+
+  it('renders checkboxes for each card', () => {
+    render(
+      <Provider store={store}>
+        <CardList data={mockData} onItemClick={vi.fn()} />
+      </Provider>
+    );
+
+    const checkboxes = screen.getAllByRole('checkbox');
+    expect(checkboxes).toHaveLength(mockData.length);
+
+    checkboxes.forEach((checkbox) => {
+      expect(checkbox).not.toBeChecked();
+    });
+  });
+
+  it('toggles checkbox state when clicked', () => {
+    render(
+      <Provider store={store}>
+        <CardList data={mockData} onItemClick={vi.fn()} />
+      </Provider>
+    );
+
+    const checkbox = screen.getAllByRole('checkbox')[0];
+    fireEvent.click(checkbox);
+
+    expect(store.getActions()).toContainEqual(toggleItemCheck(mockData[0].uid));
+  });
+
+  it('applies correct CSS classes to card elements', () => {
+    render(
+      <Provider store={store}>
+        <CardList data={mockData} onItemClick={vi.fn()} />
+      </Provider>
+    );
+
+    mockData.forEach((obj) => {
+      const card = screen.getByText(`Title: ${obj.name}`).closest('.card');
+      expect(card).toHaveClass('card');
+    });
+  });
+
+  it('handles items without location gracefully', () => {
+    const mockDataWithoutLocation: AstronomicalObject[] = [
+      ...mockData,
+      {
+        uid: '3',
+        name: 'Object 3',
+        astronomicalObjectType: 'Type 3',
+        location: { uid: null, name: null },
+      },
+    ];
+
+    render(
+      <Provider store={store}>
+        <CardList data={mockDataWithoutLocation} onItemClick={vi.fn()} />
+      </Provider>
+    );
+
+    const locationText = screen.getByText(
+      (content, element) =>
+        element?.tagName.toLowerCase() === 'p' &&
+        content.startsWith('Location:') &&
+        !content.includes('Location 1') &&
+        !content.includes('Location 2')
+    );
+
+    expect(locationText).toBeInTheDocument();
+    expect(locationText).toHaveTextContent('Location:');
+  });
+
+  it('renders checked checkboxes for selected items', () => {
+    const selectedData: AstronomicalObject[] = [
+      ...mockData,
+      {
+        uid: '3',
+        name: 'Object 3',
+        astronomicalObjectType: 'Type 3',
+        location: { uid: null, name: null },
+      },
+    ];
+
+    store = mockStore({
+      pageData: {
+        data: null,
+        selectedItems: [selectedData[2]],
+        isDownloading: false,
+        downloadProgress: 0,
+      },
+      selectedItem: {
+        item: null,
+        loading: false,
+      },
+      search: {
+        query: '',
+      },
+      api: {
+        queries: {},
+        mutations: {},
+        provided: {},
+        subscriptions: {},
+        config: {
+          reducerPath: 'api',
+          online: true,
+          focused: true,
+          middlewareRegistered: true,
+          refetchOnMountOrArgChange: false,
+          refetchOnReconnect: false,
+          refetchOnFocus: false,
+          keepUnusedDataFor: 60,
+          invalidationBehavior: 'immediately',
+        },
+      },
+    });
+
+    render(
+      <Provider store={store}>
+        <CardList data={selectedData} onItemClick={vi.fn()} />
+      </Provider>
+    );
+
+    const checkboxes = screen.getAllByRole('checkbox');
+    expect(checkboxes).toHaveLength(selectedData.length);
+
+    checkboxes.forEach((checkbox, index) => {
+      if (index === 2) {
+        expect(checkbox).toBeChecked();
+      } else {
+        expect(checkbox).not.toBeChecked();
+      }
+    });
+  });
+
+  it('handles items with empty name or location gracefully', () => {
+    const dataWithEmptyFields: AstronomicalObject[] = [
+      {
+        uid: '4',
+        name: '',
+        astronomicalObjectType: 'Type 4',
+        location: { uid: '4', name: '' },
+      },
+    ];
+
+    render(
+      <Provider store={store}>
+        <CardList data={dataWithEmptyFields} onItemClick={vi.fn()} />
+      </Provider>
+    );
+
+    expect(screen.getByText(/Title:/i)).toBeInTheDocument();
+    expect(screen.getByText(/Type: Type 4/i)).toBeInTheDocument();
+    expect(screen.getByText(/Location:/i)).toBeInTheDocument();
   });
 });
