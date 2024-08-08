@@ -1,5 +1,5 @@
 import React from 'react';
-import './PopupMenu.scss';
+import styles from './PopupMenu.module.scss';
 import { PopupMenuProps } from '../../models/data.interface';
 
 const PopupMenu: React.FC<PopupMenuProps> = ({
@@ -10,15 +10,15 @@ const PopupMenu: React.FC<PopupMenuProps> = ({
   downloadProgress,
 }) => {
   return (
-    <div className="popup-menu">
-      <div className="popup-menu__content">
+    <div className={styles['popup-menu']}>
+      <div className={styles['popup-menu__content']}>
         <p>Selected {selectedItems.length} items:</p>
         <ul>
           {selectedItems.map((item) => (
             <li key={item.uid}>{item.name}</li>
           ))}
         </ul>
-        <div className="popup-menu__buttons">
+        <div className={styles['popup-menu__buttons']}>
           <button onClick={onUnselectAll} disabled={isDownloading}>
             Unselect all
           </button>
@@ -27,12 +27,12 @@ const PopupMenu: React.FC<PopupMenuProps> = ({
           </button>
         </div>
         <div
-          className={`popup-menu__progress-bar ${
-            isDownloading ? 'popup-menu__progress-bar--visible' : ''
+          className={`${styles['popup-menu__progress-bar']} ${
+            isDownloading ? styles['popup-menu__progress-bar--visible'] : ''
           }`}
         >
           <div
-            className="popup-menu__progress"
+            className={styles['popup-menu__progress']}
             role="progressbar"
             style={{ width: `${downloadProgress}%` }}
           ></div>

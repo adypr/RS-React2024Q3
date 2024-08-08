@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFetchAstronomicalObjectsQuery } from '../../services/api';
 import { RootState } from '../../store/store';
@@ -9,13 +9,12 @@ import RightSection from './RightSection';
 import DownloadHandler from './DownloadHandler';
 
 const AstronomicalObjectsPage: React.FC = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const router = useRouter();
   const dispatch = useDispatch();
 
   const query = useMemo(
-    () => new URLSearchParams(location.search),
-    [location.search]
+    () => new URLSearchParams(router.asPath.split('?')[1]),
+    [router.asPath]
   );
   const currentPage = useMemo(
     () => parseInt(query.get('page') || '1', 10),
@@ -49,7 +48,7 @@ const AstronomicalObjectsPage: React.FC = () => {
           storedData={data}
           currentPage={currentPage}
         />
-        <RightSection query={query} navigate={navigate} />
+        <RightSection query={query} navigate={router.push} />
       </div>
       <DownloadHandler />
     </div>

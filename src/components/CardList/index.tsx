@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { CardListProps } from '../../models/data.interface';
 import { toggleItemCheck } from '../../store/slices/pageDataSlice';
 import { RootState } from '../../store/store';
-import './CardList.scss';
 
 const CardList: React.FC<CardListProps> = ({ data, onItemClick }) => {
   const dispatch = useDispatch();
@@ -22,15 +21,18 @@ const CardList: React.FC<CardListProps> = ({ data, onItemClick }) => {
       {data.map((obj) => {
         const isChecked = selectedItems.some((item) => item.uid === obj.uid);
         return (
-          <div className="card" key={obj.uid}>
+          <div
+            className="card"
+            key={obj.uid}
+            onClick={(event) => onItemClick(event, obj)}
+          >
             <input
               type="checkbox"
               checked={isChecked}
               onChange={() => handleCheckboxChange(obj.uid)}
+              onClick={(event) => event.stopPropagation()}
             />
-            <h3 className="card__title" onClick={() => onItemClick(obj)}>
-              Title: {obj.name}
-            </h3>
+            <h3 className="card__title">Title: {obj.name}</h3>
             <p className="card__type">Type: {obj.astronomicalObjectType}</p>
             <p className="card__location">
               Location: {obj.location ? obj.location.name : 'Unknown location'}

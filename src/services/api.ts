@@ -17,8 +17,9 @@ export const api = createApi({
         if (searchQuery) {
           params.append('name', searchQuery);
         }
+        const queryString = params.toString();
         return {
-          url: `astronomicalObject/search?${params.toString()}`,
+          url: `astronomicalObject/search${queryString ? `?${queryString}` : ''}`,
           method: 'POST',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',

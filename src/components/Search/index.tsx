@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { setSearchQuery } from '../../store/slices/searchSlice';
-import './Search.scss';
+import styles from './Search.module.scss';
 import { SearchProps } from '../../models/data.interface';
 
 const Search: React.FC<SearchProps> = ({ onSearchSubmit, initialSearch }) => {
@@ -23,9 +23,12 @@ const Search: React.FC<SearchProps> = ({ onSearchSubmit, initialSearch }) => {
   };
 
   return (
-    <div className="search">
+    <div className={styles.search}>
       <input type="text" value={localSearch} onChange={handleSearchChange} />
-      <button className="button search__button" onClick={handleSearchSubmit}>
+      <button
+        className={`button ${styles['search__button']}`}
+        onClick={handleSearchSubmit}
+      >
         Search
       </button>
     </div>

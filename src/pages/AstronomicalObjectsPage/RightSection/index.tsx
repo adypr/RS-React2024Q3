@@ -1,12 +1,15 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Details from '../../../components/Details';
 import { RootState } from '../../../store/store';
 import { setSelectedItem } from '../../../store/slices/selectedItemSlice';
 import { RightSectionProps } from '../../../models/data.interface';
+import { useRouter } from 'next/router';
 
-const RightSection: React.FC<RightSectionProps> = ({ query, navigate }) => {
+const RightSection: React.FC<RightSectionProps> = ({ query }) => {
   const dispatch = useDispatch();
+  const router = useRouter();
+  const rightSectionRef = useRef<HTMLDivElement>(null);
 
   const selectedItem = useSelector(
     (state: RootState) => state.selectedItem.item
@@ -18,16 +21,19 @@ const RightSection: React.FC<RightSectionProps> = ({ query, navigate }) => {
   const closeDetails = useCallback(() => {
     dispatch(setSelectedItem(null));
     query.delete('details');
-    navigate({ search: query.toString() });
-  }, [navigate, query, dispatch]);
+    router.push({ search: query.toString() }, undefined, { shallow: true });
+  }, [router, query, dispatch]);
 
   const handleClickOutside = useCallback(
     (event: MouseEvent) => {
-      if (!(event.target as HTMLElement).closest('.right-section')) {
+      if (
+        rightSectionRef.current &&
+        !rightSectionRef.current.contains(event.target as Node)
+      ) {
         closeDetails();
       }
     },
-    [closeDetails]
+    [closeDetails, rightSectionRef]
   );
 
   useEffect(() => {
@@ -39,7 +45,7 @@ const RightSection: React.FC<RightSectionProps> = ({ query, navigate }) => {
   }, [handleClickOutside]);
 
   return (
-    <div className="right-section">
+    <div ref={rightSectionRef} className="right-section">
       {rightSectionLoading && <div className="loading">Loading...</div>}
       {!rightSectionLoading && selectedItem && (
         <Details item={selectedItem} onClose={closeDetails} />

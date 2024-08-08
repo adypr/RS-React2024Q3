@@ -1,6 +1,6 @@
 .header,
 .footer {
-  background: url('/src/assets/bg.jpg') no-repeat;
+  background: url('../assets/bg.jpg') no-repeat;
   background-size: cover;
 }
 
@@ -19,7 +19,7 @@ footer {
   height: 100px;
   margin: 0 auto;
 
-  background: url('/src/assets/ripples.svg') no-repeat center;
+  background: url('../assets/ripples.svg') no-repeat center;
 }
 
 .content {

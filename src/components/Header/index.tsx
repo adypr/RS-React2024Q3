@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import { useDispatch } from 'react-redux';
 import { setSearchQuery } from '../../store/slices/searchSlice';
 import useTheme from '../../hooks/useTheme';
@@ -7,15 +7,14 @@ import Search from '../Search';
 import { HeaderProps } from '../../models/data.interface';
 
 const Header: React.FC<HeaderProps> = ({ onEmulateError }) => {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const router = useRouter();
   const dispatch = useDispatch();
   const { theme, toggleTheme } = useTheme();
   const [initialSearch, setInitialSearch] = useState<string>('');
 
   const query = useMemo(
-    () => new URLSearchParams(location.search),
-    [location.search]
+    () => new URLSearchParams(router.asPath.split('?')[1]),
+    [router.asPath]
   );
 
   useEffect(() => {
@@ -38,7 +37,7 @@ const Header: React.FC<HeaderProps> = ({ onEmulateError }) => {
       query.delete('name');
       localStorage.removeItem('searching');
     }
-    navigate({ search: query.toString() });
+    router.push({ search: query.toString() });
   };
 
   return (

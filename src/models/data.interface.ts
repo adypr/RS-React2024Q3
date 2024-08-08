@@ -34,7 +34,10 @@ export type mainData = {
 
 export interface CardListProps {
   data: AstronomicalObjects;
-  onItemClick: (item: AstronomicalObject) => void;
+  onItemClick: (
+    event: React.MouseEvent<Element, MouseEvent>,
+    item: AstronomicalObject
+  ) => void;
 }
 
 export interface DetailsProps {

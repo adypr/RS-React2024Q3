@@ -1,3 +1,7 @@
+@import 'normalize';
+@import 'variables';
+@import 'App';
+
 * {
   box-sizing: border-box;
 
@@ -54,7 +58,7 @@ footer {
   padding: 15px 0;
 }
 
-#root {
+#__next {
   display: flex;
   flex-direction: column;
   justify-content: space-between;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import { useDispatch } from 'react-redux';
 import CardList from '../../../components/CardList';
 import Pagination from '../../../components/Pagination';
@@ -19,21 +19,26 @@ const LeftSection: React.FC<LeftSectionProps> = ({
   storedData,
   currentPage,
 }) => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const dispatch = useDispatch();
 
   const handlePageChange = (newPage: number) => {
     const query = new URLSearchParams(window.location.search);
     query.set('page', newPage.toString());
-    navigate({ search: query.toString() });
+    router.push({ search: query.toString() });
   };
 
-  const handleItemClick = (item: AstronomicalObject) => {
+  const handleItemClick = (
+    event: React.MouseEvent<Element, MouseEvent>,
+    item: AstronomicalObject
+  ) => {
+    event.preventDefault();
+    event.stopPropagation();
     dispatch(setSelectedItem(item));
     dispatch(setLoading(true));
     const query = new URLSearchParams(window.location.search);
     query.set('details', item.uid);
-    navigate({ search: query.toString() });
+    router.push({ search: query.toString() }, undefined, { shallow: true });
 
     setTimeout(() => {
       dispatch(setLoading(false));
