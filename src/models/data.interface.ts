@@ -1,6 +1,3 @@
-import { ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
-
 export type AstronomicalObject = {
   astronomicalObjectType: string;
   location: {
@@ -45,14 +42,6 @@ export interface DetailsProps {
   onClose: () => void;
 }
 
-export interface ErrorBoundaryProps {
-  children: ReactNode;
-}
-
-export interface ErrorBoundaryState {
-  hasError: boolean;
-}
-
 export interface HeaderProps {
   onEmulateError: () => void;
 }
@@ -93,7 +82,6 @@ export interface LeftSectionProps {
 
 export interface RightSectionProps {
   query: URLSearchParams;
-  navigate: ReturnType<typeof useNavigate>;
 }
 
 export interface AstronomicalObjectsState {

@@ -6,6 +6,7 @@ import { ThemeProvider } from '../context/ThemeContext';
 import { Provider } from 'react-redux';
 import store from '../store/store';
 import ErrorBoundary from '../components/ErrorBoundary';
+import EmulateErrorComponent from '../components/EmulateErrorComponent';
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   const [emulateError, setEmulateError] = useState(false);
@@ -14,15 +15,12 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
     setEmulateError(true);
   };
 
-  if (emulateError) {
-    throw new Error('Emulate error!');
-  }
-
   return (
     <ErrorBoundary>
       <Provider store={store}>
         <ThemeProvider>
           <Header onEmulateError={handleThrowError} />
+          {emulateError && <EmulateErrorComponent />}
           <main>
             <Component {...pageProps} />
           </main>

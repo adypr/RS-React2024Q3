@@ -48,7 +48,7 @@ const AstronomicalObjectsPage: React.FC = () => {
           storedData={data}
           currentPage={currentPage}
         />
-        <RightSection query={query} navigate={router.push} />
+        <RightSection query={query} />
       </div>
       <DownloadHandler />
     </div>
