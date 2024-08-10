@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
-import DownloadHandler from '../../../pages/AstronomicalObjectsPage/DownloadHandler';
+import DownloadHandler from '../../../components/AstronomicalObjects/DownloadHandler';
 import { vi } from 'vitest';
 
 global.URL.createObjectURL = vi.fn(() => 'mock-url');

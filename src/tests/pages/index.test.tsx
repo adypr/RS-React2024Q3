@@ -3,7 +3,11 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import Home from '../../pages';
 
-vi.mock('../../pages/AstronomicalObjectsPage', () => ({
+vi.mock('next/router', () => ({
+  useRouter: vi.fn(),
+}));
+
+vi.mock('../../components/AstronomicalObjects', () => ({
   default: () => <div>Astronomical Objects Page Mock</div>,
 }));
 

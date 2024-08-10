@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import PopupMenu from '../../../components/PopupMenu';
+import PopupMenu from '../../PopupMenu';
 import {
   clearSelectedItems,
   setDownloading,

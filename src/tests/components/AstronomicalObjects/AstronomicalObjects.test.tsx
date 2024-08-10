@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
-import AstronomicalObjectsPage from '../../../pages/AstronomicalObjectsPage';
+import AstronomicalObjectsPage from '../../../components/AstronomicalObjects';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import rootReducer from '../../../store/reducers';
 import { api } from '../../../services/api';

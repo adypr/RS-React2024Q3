@@ -1,5 +1,5 @@
 import React from 'react';
-import AstronomicalObjectsPage from '../pages/AstronomicalObjectsPage';
+import AstronomicalObjectsPage from '../components/AstronomicalObjects';
 
 const Home = () => {
   return <AstronomicalObjectsPage />;

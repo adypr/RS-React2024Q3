@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Details from '../../../components/Details';
+import Details from '../../Details';
 import { RootState } from '../../../store/store';
 import { setSelectedItem } from '../../../store/slices/selectedItemSlice';
 import { RightSectionProps } from '../../../models/data.interface';

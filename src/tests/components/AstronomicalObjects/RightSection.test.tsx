@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
-import RightSection from '../../../pages/AstronomicalObjectsPage/RightSection';
+import RightSection from '../../../components/AstronomicalObjects/RightSection';
 import { setSelectedItem } from '../../../store/slices/selectedItemSlice';
 import { vi } from 'vitest';
 import { useRouter } from 'next/router';

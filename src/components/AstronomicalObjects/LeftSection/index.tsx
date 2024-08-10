@@ -1,8 +1,8 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import { useDispatch } from 'react-redux';
-import CardList from '../../../components/CardList';
-import Pagination from '../../../components/Pagination';
+import CardList from '../../CardList';
+import Pagination from '../../Pagination';
 import {
   AstronomicalObject,
   LeftSectionProps,
