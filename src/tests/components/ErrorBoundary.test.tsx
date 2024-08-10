@@ -1,27 +1,67 @@
-import { render, screen } from '@testing-library/react';
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import ErrorBoundary from '../../components/ErrorBoundary';
-import { describe, it, expect, vi } from 'vitest';
 
-const ProblemChild = () => {
-  throw new Error('Error thrown from problem child');
-};
+describe('ErrorBoundary Component', () => {
+  const ChildComponent = () => {
+    throw new Error('Test error');
+  };
 
-describe('ErrorBoundary', () => {
-  it('renders error message when a child throws an error', () => {
-    const originalConsoleError = console.error;
-    console.error = vi.fn();
+  beforeEach(() => {
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+  });
 
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('should display error message when an error is thrown', () => {
     render(
       <ErrorBoundary>
-        <ProblemChild />
+        <ChildComponent />
       </ErrorBoundary>
     );
 
+    expect(screen.getByText('Something went wrong.')).toBeInTheDocument();
     expect(
-      screen.getByText('Something went wrong. Please reload app.')
+      screen.getByText(
+        'An unexpected error occurred. Please reload this app or try again later.'
+      )
     ).toBeInTheDocument();
+  });
 
-    console.error = originalConsoleError;
+  it('should reload the page when the "Reload App" button is clicked', () => {
+    const originalLocation = global.window.location;
+    const mockReload = vi.fn();
+
+    global.window.location = {
+      ...global.window.location,
+      reload: mockReload,
+    };
+
+    render(
+      <ErrorBoundary>
+        <ChildComponent />
+      </ErrorBoundary>
+    );
+
+    const reloadButton = screen.getByText('Reload App');
+    fireEvent.click(reloadButton);
+
+    expect(mockReload).toHaveBeenCalled();
+
+    global.window.location = originalLocation;
+  });
+
+  it('should render child components when no error is thrown', () => {
+    render(
+      <ErrorBoundary>
+        <div>Child component</div>
+      </ErrorBoundary>
+    );
+
+    expect(screen.getByText('Child component')).toBeInTheDocument();
   });
 });

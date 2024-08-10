@@ -8,7 +8,7 @@ import store from '../store/store';
 import ErrorBoundary from '../components/ErrorBoundary';
 import EmulateErrorComponent from '../components/EmulateErrorComponent';
 
-const MyApp = ({ Component, pageProps }: AppProps) => {
+const App = ({ Component, pageProps }: AppProps) => {
   const [emulateError, setEmulateError] = useState(false);
 
   const handleThrowError = () => {
@@ -33,4 +33,4 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   );
 };
 
-export default MyApp;
+export default App;

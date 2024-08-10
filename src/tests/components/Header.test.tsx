@@ -1,15 +1,15 @@
+import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Header from '../../components/Header';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import { useDispatch } from 'react-redux';
 import useTheme from '../../hooks/useTheme';
 import { setSearchQuery } from '../../store/slices/searchSlice';
 
-vi.mock('react-router-dom', () => ({
-  useNavigate: vi.fn(),
-  useLocation: vi.fn(),
+vi.mock('next/router', () => ({
+  useRouter: vi.fn(),
 }));
 
 vi.mock('react-redux', () => ({
@@ -21,19 +21,27 @@ vi.mock('../../hooks/useTheme', () => ({
 }));
 
 describe('Header', () => {
-  const mockNavigate = vi.fn();
+  const mockPush = vi.fn();
   const mockDispatch = vi.fn();
   const mockToggleTheme = vi.fn();
   const mockOnEmulateError = vi.fn();
 
   beforeEach(() => {
-    (useNavigate as unknown as jest.Mock).mockReturnValue(mockNavigate);
-    (useLocation as unknown as jest.Mock).mockReturnValue({ search: '' });
+    (useRouter as unknown as jest.Mock).mockReturnValue({
+      push: mockPush,
+      asPath: '',
+    });
+
     (useDispatch as unknown as jest.Mock).mockReturnValue(mockDispatch);
     (useTheme as unknown as jest.Mock).mockReturnValue({
       theme: 'light',
       toggleTheme: mockToggleTheme,
     });
+
+    mockPush.mockClear();
+    mockDispatch.mockClear();
+    mockToggleTheme.mockClear();
+    mockOnEmulateError.mockClear();
   });
 
   it('renders header with title, subtitle, and buttons', () => {
@@ -67,14 +75,15 @@ describe('Header', () => {
     fireEvent.click(screen.getByText('Search'));
 
     expect(mockDispatch).toHaveBeenCalledWith(setSearchQuery('Enterprise'));
-    expect(mockNavigate).toHaveBeenCalledWith({
+    expect(mockPush).toHaveBeenCalledWith({
       search: 'page=1&name=Enterprise',
     });
   });
 
   it('loads initial search query from URL', () => {
-    (useLocation as unknown as jest.Mock).mockReturnValue({
-      search: '?name=Voyager',
+    (useRouter as unknown as jest.Mock).mockReturnValue({
+      asPath: '?name=Voyager',
+      push: mockPush,
     });
 
     render(<Header onEmulateError={mockOnEmulateError} />);

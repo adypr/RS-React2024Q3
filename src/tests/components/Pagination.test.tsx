@@ -1,33 +1,45 @@
+import React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { createMemoryHistory } from 'history';
-import { Router } from 'react-router-dom';
 import Pagination from '../../components/Pagination';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
+import { useRouter } from 'next/router';
+
+vi.mock('next/router', () => ({
+  useRouter: vi.fn(),
+}));
 
 describe('Pagination component', () => {
+  const mockPush = vi.fn();
+
+  beforeEach(() => {
+    (useRouter as unknown as jest.Mock).mockReturnValue({
+      push: mockPush,
+      query: {},
+      asPath: '',
+    });
+    mockPush.mockClear();
+  });
+
   it('should update URL query parameter when page changes', async () => {
-    const history = createMemoryHistory();
     const handlePageChange = (page: number) => {
-      const searchParams = new URLSearchParams(history.location.search);
+      const searchParams = new URLSearchParams();
       searchParams.set('page', page.toString());
-      history.push({ search: searchParams.toString() });
+      mockPush({ search: searchParams.toString() });
     };
 
     render(
-      <Router location={history.location} navigator={history}>
-        <Pagination
-          currentPage={1}
-          totalPages={5}
-          onPageChange={handlePageChange}
-        />
-      </Router>
+      <Pagination
+        currentPage={1}
+        totalPages={5}
+        onPageChange={handlePageChange}
+      />
     );
 
     const nextPageButton = screen.getByText('2');
     await userEvent.click(nextPageButton);
 
-    expect(history.location.search).toContain('page=2');
+    expect(mockPush).toHaveBeenCalledWith({ search: 'page=2' });
   });
 
   it('should disable the previous button on the first page', () => {

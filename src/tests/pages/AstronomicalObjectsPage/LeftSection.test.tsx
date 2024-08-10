@@ -1,21 +1,72 @@
+import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { BrowserRouter as Router } from 'react-router-dom';
-import configureStore, { MockStoreEnhanced } from 'redux-mock-store';
-import { Action } from 'redux';
+import configureStore from 'redux-mock-store';
 import LeftSection from '../../../pages/AstronomicalObjectsPage/LeftSection';
-import { LeftSectionProps } from '../../../models/data.interface';
-import { RootState } from '../../../store/store';
 import {
   setSelectedItem,
   setLoading,
 } from '../../../store/slices/selectedItemSlice';
+import { vi } from 'vitest';
+import { useRouter } from 'next/router';
 
-const mockStore = configureStore<RootState, Action>([]);
+vi.mock('next/router', () => ({
+  useRouter: vi.fn(),
+}));
+
+const mockStore = configureStore([]);
+const mockPush = vi.fn();
+
+const renderWithProviders = (
+  store: ReturnType<typeof mockStore>,
+  props: Partial<React.ComponentProps<typeof LeftSection>> = {}
+) => {
+  return render(
+    <Provider store={store}>
+      <div>
+        <LeftSection
+          isFetching={false}
+          isError={false}
+          error={null}
+          storedData={{
+            astronomicalObjects: [
+              {
+                uid: '1',
+                name: 'Object 1',
+                astronomicalObjectType: 'Type 1',
+                location: { uid: 'loc1', name: 'Location 1' },
+              },
+              {
+                uid: '2',
+                name: 'Object 2',
+                astronomicalObjectType: 'Type 2',
+                location: { uid: 'loc2', name: 'Location 2' },
+              },
+            ],
+            page: {
+              totalPages: 2,
+              pageNumber: 1,
+              pageSize: 10,
+              totalElements: 20,
+              firstPage: true,
+              lastPage: false,
+              numberOfElements: 2,
+            },
+            sort: {
+              clauses: [],
+            },
+          }}
+          currentPage={1}
+          {...props}
+        />
+        <div data-testid="outside-element">Outside Element</div>
+      </div>
+    </Provider>
+  );
+};
 
 describe('LeftSection Component', () => {
-  let store: MockStoreEnhanced<RootState, Action>;
-  let props: LeftSectionProps;
+  let store: ReturnType<typeof mockStore>;
 
   beforeEach(() => {
     store = mockStore({
@@ -24,141 +75,66 @@ describe('LeftSection Component', () => {
         loading: false,
       },
       pageData: {
-        data: null,
         selectedItems: [],
+        data: null,
         isDownloading: false,
         downloadProgress: 0,
       },
-      search: {
-        query: '',
-      },
-      api: {
-        queries: {},
-        mutations: {},
-        provided: {},
-        subscriptions: {},
-        config: {
-          reducerPath: 'api',
-          keepUnusedDataFor: 60,
-          refetchOnFocus: false,
-          refetchOnReconnect: false,
-          refetchOnMountOrArgChange: false,
-          online: true,
-          focused: false,
-          middlewareRegistered: false,
-          invalidationBehavior: 'immediately',
-        },
-      },
     });
 
-    props = {
-      isFetching: false,
-      isError: false,
-      error: null,
-      storedData: {
-        astronomicalObjects: [
-          {
-            uid: '1',
-            name: 'Object 1',
-            astronomicalObjectType: 'Type 1',
-            location: { uid: 'loc1', name: 'Location 1' },
-          },
-          {
-            uid: '2',
-            name: 'Object 2',
-            astronomicalObjectType: 'Type 2',
-            location: { uid: 'loc2', name: 'Location 2' },
-          },
-        ],
-        page: {
-          totalPages: 2,
-          pageNumber: 1,
-          pageSize: 10,
-          totalElements: 20,
-          firstPage: true,
-          lastPage: false,
-          numberOfElements: 2,
-        },
-        sort: {
-          clauses: [],
-        },
-      },
-      currentPage: 1,
-    };
+    (useRouter as unknown as jest.Mock).mockReturnValue({
+      push: mockPush,
+      query: {},
+    });
+    mockPush.mockClear();
   });
 
-  it('should display loading message when fetching', () => {
-    render(
-      <Provider store={store}>
-        <Router>
-          <LeftSection {...props} isFetching={true} />
-        </Router>
-      </Provider>
+  test('should display loading message when fetching', () => {
+    renderWithProviders(
+      mockStore({
+        selectedItem: {
+          item: null,
+          loading: true,
+        },
+        pageData: {
+          selectedItems: [],
+        },
+      }),
+      { isFetching: true }
     );
-
     expect(screen.getByText(/Loading.../i)).toBeInTheDocument();
   });
 
-  it('should display error message when error occurs', () => {
-    props.isError = true;
-    props.error = 'Network Error';
-
-    render(
-      <Provider store={store}>
-        <Router>
-          <LeftSection {...props} />
-        </Router>
-      </Provider>
-    );
-
-    const errorMessage = screen.getByText((_, element) => {
-      const hasText = (node: HTMLElement) =>
-        node.textContent === 'Error: "Network Error"';
-      const nodeHasText = hasText(element as HTMLElement);
-      const childrenDontHaveText = Array.from(element?.children || []).every(
-        (child) => !hasText(child as HTMLElement)
-      );
-      return nodeHasText && childrenDontHaveText;
+  test('should display error message when error occurs', () => {
+    renderWithProviders(store, {
+      isError: true,
+      error: 'Network Error',
     });
 
-    expect(errorMessage).toBeInTheDocument();
+    expect(screen.getByText('Error: "Network Error"')).toBeInTheDocument();
   });
 
-  it('should display data when available', () => {
-    render(
-      <Provider store={store}>
-        <Router>
-          <LeftSection {...props} />
-        </Router>
-      </Provider>
-    );
-
+  test('should display data when available', () => {
+    renderWithProviders(store);
     expect(screen.getByText(/Object 1/i)).toBeInTheDocument();
     expect(screen.getByText(/Object 2/i)).toBeInTheDocument();
   });
 
-  it('should navigate to item details on click', () => {
-    render(
-      <Provider store={store}>
-        <Router>
-          <LeftSection {...props} />
-        </Router>
-      </Provider>
-    );
+  test('should navigate to item details on click', () => {
+    renderWithProviders(store);
 
     const object1 = screen.getByText(/Object 1/i);
     fireEvent.click(object1);
 
     const actions = store.getActions();
-    const selectedItem = props.storedData?.astronomicalObjects[0];
+    const selectedItem = {
+      uid: '1',
+      name: 'Object 1',
+      astronomicalObjectType: 'Type 1',
+      location: { uid: 'loc1', name: 'Location 1' },
+    };
 
-    if (selectedItem) {
-      expect(actions).toEqual([
-        setSelectedItem(selectedItem),
-        setLoading(true),
-      ]);
-    } else {
-      throw new Error('Selected item should not be undefined');
-    }
+    expect(actions).toEqual([setSelectedItem(selectedItem), setLoading(true)]);
+    expect(mockPush).toHaveBeenCalled();
   });
 });

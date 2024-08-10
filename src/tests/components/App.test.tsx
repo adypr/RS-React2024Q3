@@ -1,57 +1,84 @@
-import { render, screen, waitFor } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { expect, test, vi } from 'vitest';
-import store from '../../store/store';
-import App from '../../App';
-import ErrorBoundary from '../../components/ErrorBoundary';
 import { ThemeProvider } from '../../context/ThemeContext';
+import store from '../../store/store';
+import App from '../../pages/_app';
+import { AppProps } from 'next/app';
+import { Router } from 'next/router';
+import { vi } from 'vitest';
 
-test('renders header and footer', () => {
-  render(
-    <Provider store={store}>
-      <MemoryRouter>
+vi.mock('../../components/Header', () => ({
+  __esModule: true,
+  default: ({ onEmulateError }: { onEmulateError: () => void }) => (
+    <button onClick={onEmulateError}>Emulate Error</button>
+  ),
+}));
+
+vi.mock('../../components/EmulateErrorComponent', () => ({
+  __esModule: true,
+  default: () => <div>Error Component</div>,
+}));
+
+describe('App Component', () => {
+  const TestComponent = () => <div>Test Component</div>;
+
+  const mockRouter: Partial<Router> = {
+    route: '/',
+    pathname: '/',
+    query: {},
+    asPath: '/',
+    basePath: '',
+    isLocaleDomain: false,
+    isReady: true,
+    push: vi.fn(),
+    replace: vi.fn(),
+    reload: vi.fn(),
+    back: vi.fn(),
+    prefetch: vi.fn().mockResolvedValue(undefined),
+    beforePopState: vi.fn(),
+    events: {
+      on: vi.fn(),
+      off: vi.fn(),
+      emit: vi.fn(),
+    },
+    isFallback: false,
+    components: {},
+    sdc: {},
+    sbc: {},
+    sub: vi.fn(),
+    clc: vi.fn(),
+  };
+
+  const renderApp = (props: Partial<AppProps> = {}) =>
+    render(
+      <Provider store={store}>
         <ThemeProvider>
-          <App />
+          <App
+            Component={TestComponent}
+            pageProps={{}}
+            router={mockRouter as Router}
+            {...props}
+          />
         </ThemeProvider>
-      </MemoryRouter>
-    </Provider>
-  );
+      </Provider>
+    );
 
-  expect(
-    screen.getByText('The Rolling Scopes School, 2024')
-  ).toBeInTheDocument();
-  expect(screen.getByText('Star Trek')).toBeInTheDocument();
-  expect(screen.getByText('Astronomical Objects')).toBeInTheDocument();
-});
+  test('renders the header, main content, and footer', () => {
+    renderApp();
 
-test('emulates error on button click', async () => {
-  const consoleErrorMock = vi
-    .spyOn(console, 'error')
-    .mockImplementation(() => {});
-
-  render(
-    <Provider store={store}>
-      <MemoryRouter>
-        <ThemeProvider>
-          <ErrorBoundary>
-            <App />
-          </ErrorBoundary>
-        </ThemeProvider>
-      </MemoryRouter>
-    </Provider>
-  );
-
-  const errorButton = screen.getByText('Emulate Error');
-  expect(errorButton).toBeInTheDocument();
-
-  errorButton.click();
-
-  await waitFor(() => {
+    expect(screen.getByText('Emulate Error')).toBeInTheDocument();
+    expect(screen.getByText('Test Component')).toBeInTheDocument();
     expect(
-      screen.getByText('Something went wrong. Please reload app.')
+      screen.getByText('The Rolling Scopes School, 2024')
     ).toBeInTheDocument();
   });
 
-  consoleErrorMock.mockRestore();
+  test('displays the EmulateErrorComponent when emulateError is true', () => {
+    renderApp();
+
+    fireEvent.click(screen.getByText('Emulate Error'));
+
+    expect(screen.getByText('Error Component')).toBeInTheDocument();
+  });
 });

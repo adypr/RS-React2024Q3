@@ -1,3 +1,4 @@
+import React from 'react';
 import { render, screen, fireEvent, within } from '@testing-library/react';
 import Details from '../../components/Details';
 import { AstronomicalObject } from '../../models/data.interface';

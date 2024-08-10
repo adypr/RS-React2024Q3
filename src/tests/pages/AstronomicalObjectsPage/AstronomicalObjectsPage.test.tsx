@@ -1,14 +1,20 @@
+import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router-dom';
 import { configureStore } from '@reduxjs/toolkit';
 import AstronomicalObjectsPage from '../../../pages/AstronomicalObjectsPage';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import rootReducer from '../../../store/reducers';
 import { api } from '../../../services/api';
+import { useRouter } from 'next/router';
+
+vi.mock('next/router', () => ({
+  useRouter: vi.fn(),
+}));
 
 describe('AstronomicalObjectsPage Component', () => {
   let store: ReturnType<typeof configureStore>;
+  const mockPush = vi.fn();
 
   beforeEach(() => {
     store = configureStore({
@@ -69,14 +75,17 @@ describe('AstronomicalObjectsPage Component', () => {
     });
 
     vi.clearAllMocks();
+
+    (useRouter as unknown as jest.Mock).mockReturnValue({
+      push: mockPush,
+      asPath: '',
+    });
   });
 
   it('displays a loading indicator while fetching data', () => {
     render(
       <Provider store={store}>
-        <MemoryRouter>
-          <AstronomicalObjectsPage />
-        </MemoryRouter>
+        <AstronomicalObjectsPage />
       </Provider>
     );
 

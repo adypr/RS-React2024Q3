@@ -1,3 +1,4 @@
+import React from 'react';
 import { Component, ErrorInfo, ReactNode } from 'react';
 import styles from './ErrorBoundary.module.scss';
 

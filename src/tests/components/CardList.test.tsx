@@ -1,3 +1,4 @@
+import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore, { MockStoreEnhanced } from 'redux-mock-store';
@@ -83,8 +84,13 @@ describe('CardList Component', () => {
       </Provider>
     );
 
-    fireEvent.click(screen.getByText(/Object 1/i));
-    expect(onItemClick).toHaveBeenCalledWith(mockData[0]);
+    const titleElement = screen.getByText(/Object 1/i);
+    fireEvent.click(titleElement);
+
+    expect(onItemClick).toHaveBeenCalledWith(
+      expect.objectContaining({ type: 'click' }),
+      mockData[0]
+    );
   });
 
   it('renders the specified number of cards', () => {

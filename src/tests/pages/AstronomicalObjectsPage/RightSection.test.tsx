@@ -1,23 +1,26 @@
+import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import RightSection from '../../../pages/AstronomicalObjectsPage/RightSection';
 import { setSelectedItem } from '../../../store/slices/selectedItemSlice';
 import { vi } from 'vitest';
+import { useRouter } from 'next/router';
+
+vi.mock('next/router', () => ({
+  useRouter: vi.fn(),
+}));
 
 const mockStore = configureStore([]);
-const mockNavigate = vi.fn();
+const mockPush = vi.fn();
 
 const renderWithProviders = (store: ReturnType<typeof mockStore>) => {
   return render(
     <Provider store={store}>
-      <MemoryRouter>
-        <div>
-          <RightSection query={new URLSearchParams()} navigate={mockNavigate} />
-          <div data-testid="outside-element">Outside Element</div>
-        </div>
-      </MemoryRouter>
+      <div>
+        <RightSection query={new URLSearchParams()} />
+        <div data-testid="outside-element">Outside Element</div>
+      </div>
     </Provider>
   );
 };
@@ -36,7 +39,11 @@ describe('RightSection Component', () => {
         loading: false,
       },
     });
-    mockNavigate.mockClear();
+    (useRouter as jest.Mock).mockReturnValue({
+      push: mockPush,
+      query: {},
+    });
+    mockPush.mockClear();
   });
 
   test('renders loading state', () => {
@@ -61,6 +68,7 @@ describe('RightSection Component', () => {
     renderWithProviders(store);
     fireEvent.click(screen.getByText('🗙'));
     expect(store.getActions()).toContainEqual(setSelectedItem(null));
+    expect(mockPush).toHaveBeenCalled();
   });
 
   test('closes Details on outside click', () => {
@@ -68,5 +76,6 @@ describe('RightSection Component', () => {
     const outsideElement = screen.getByTestId('outside-element');
     fireEvent.mouseDown(outsideElement);
     expect(store.getActions()).toContainEqual(setSelectedItem(null));
+    expect(mockPush).toHaveBeenCalled();
   });
 });
