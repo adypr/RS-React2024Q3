@@ -82,6 +82,12 @@ footer {
   flex-direction: column;
   gap: 15px;
 
+  & img {
+    width: 100%;
+    height: auto;
+    padding: 0;
+  }
+
   & button {
     width: fit-content;
     padding: 5px;

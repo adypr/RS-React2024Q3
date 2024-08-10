@@ -243,6 +243,18 @@ button {
     color 0.3s;
 }
 
+.__next {
+  height: 100vh;
+}
+
+.light,
+.dark {
+  display: flex;
+  flex-direction: column;
+
+  height: 100%;
+}
+
 .wrapper {
   padding: 20px;
 }
