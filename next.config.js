@@ -1,6 +1,6 @@
 import path from 'path';
 
-export default {
+const nextConfig = {
   reactStrictMode: true,
   sassOptions: {
     includePaths: [path.join(process.cwd(), 'styles')],
@@ -12,4 +12,16 @@ export default {
 
     return config;
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'spaceholder.cc',
+        port: '',
+        pathname: '/i/**',
+      },
+    ],
+  },
 };
+
+export default nextConfig;
