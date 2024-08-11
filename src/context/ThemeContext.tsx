@@ -8,18 +8,16 @@ export const ThemeContext = createContext<ThemeContextType | undefined>(
 export const ThemeProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [theme, setTheme] = useState<Theme>('light');
+  const [theme, setTheme] = useState<Theme | null>(null);
 
   useEffect(() => {
     const savedTheme =
       typeof window !== 'undefined' ? localStorage.getItem('theme') : null;
-    if (savedTheme) {
-      setTheme(savedTheme as Theme);
-    }
+    setTheme((savedTheme as Theme) || 'light');
   }, []);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (theme) {
       localStorage.setItem('theme', theme);
     }
   }, [theme]);
@@ -28,9 +26,13 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({
     setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
   };
 
+  if (theme === null) {
+    return null;
+  }
+
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      <div className={theme}>{children}</div>
+      <div className={`${theme}`}>{children}</div>
     </ThemeContext.Provider>
   );
 };
