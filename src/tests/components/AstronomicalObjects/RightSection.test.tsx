@@ -46,15 +46,9 @@ describe('RightSection Component', () => {
     mockPush.mockClear();
   });
 
-  test('renders loading state', () => {
-    store = mockStore({
-      selectedItem: {
-        item: null,
-        loading: true,
-      },
-    });
-    renderWithProviders(store);
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
+  afterEach(() => {
+    vi.resetAllMocks();
+    store.clearActions();
   });
 
   test('renders Details component when an item is selected', () => {
@@ -71,11 +65,34 @@ describe('RightSection Component', () => {
     expect(mockPush).toHaveBeenCalled();
   });
 
-  test('closes Details on outside click', () => {
+  test('does not render when no item is selected', () => {
+    store = mockStore({
+      selectedItem: {
+        item: null,
+        loading: false,
+      },
+    });
     renderWithProviders(store);
-    const outsideElement = screen.getByTestId('outside-element');
-    fireEvent.mouseDown(outsideElement);
-    expect(store.getActions()).toContainEqual(setSelectedItem(null));
-    expect(mockPush).toHaveBeenCalled();
+    expect(screen.queryByText('Earth')).not.toBeInTheDocument();
+  });
+
+  test('renders loading indicator when loading is true', () => {
+    store = mockStore({
+      selectedItem: {
+        item: {
+          name: 'Earth',
+          astronomicalObjectType: 'Planet',
+          location: { name: 'Solar System' },
+        },
+        loading: true,
+      },
+    });
+    renderWithProviders(store);
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
+  });
+
+  test('does not render loading indicator when loading is false', () => {
+    renderWithProviders(store);
+    expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
   });
 });

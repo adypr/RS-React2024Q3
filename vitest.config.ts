@@ -1,12 +1,10 @@
 import { defineConfig } from 'vitest/config';
-import { configDefaults } from 'vitest/config';
 
 export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
-    setupFiles: './vitest.setup.ts',
-    exclude: [...configDefaults.exclude, 'src/tests/*'],
+    setupFiles: './setupTests.ts',
     coverage: {
       reporter: ['text', 'html'],
       reportsDirectory: './coverage',
@@ -18,6 +16,9 @@ export default defineConfig({
         'dist',
         'src/tests/**/*',
         '.next',
+        'src/models/data.interface.ts',
+        'next-env.d.ts',
+        'next.config.mjs'
       ],
     },
   },

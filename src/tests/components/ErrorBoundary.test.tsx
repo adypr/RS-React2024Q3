@@ -10,7 +10,7 @@ describe('ErrorBoundary Component', () => {
   };
 
   beforeEach(() => {
-    vi.spyOn(console, 'error').mockImplementation(() => {});
+    vi.spyOn(console, 'error').mockImplementation(() => { });
   });
 
   afterEach(() => {

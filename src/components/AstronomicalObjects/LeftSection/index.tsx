@@ -23,9 +23,9 @@ const LeftSection: React.FC<LeftSectionProps> = ({
   const dispatch = useDispatch();
 
   const handlePageChange = (newPage: number) => {
-    const query = new URLSearchParams(window.location.search);
-    query.set('page', newPage.toString());
-    router.push({ search: query.toString() });
+    const query = { ...router.query };
+    query.page = newPage.toString();
+    router.push({ pathname: router.pathname, query });
   };
 
   const handleItemClick = (
@@ -36,17 +36,24 @@ const LeftSection: React.FC<LeftSectionProps> = ({
     event.stopPropagation();
     dispatch(setSelectedItem(item));
     dispatch(setLoading(true));
-    const query = new URLSearchParams(window.location.search);
-    query.set('details', item.uid);
-    router.push({ search: query.toString() }, undefined, { shallow: true });
+
+    const query = { ...router.query };
+    query.details = item.uid;
+    router.push({ pathname: router.pathname, query }, undefined, {
+      shallow: true,
+    });
 
     setTimeout(() => {
       dispatch(setLoading(false));
     }, 500);
   };
 
+  const handleLeftSectionClick = () => {
+    dispatch(setSelectedItem(null));
+  };
+
   return (
-    <div className="left-section">
+    <div className="left-section" onClick={handleLeftSectionClick}>
       {isFetching && <div className="loading">Loading...</div>}
       {isError && (
         <div className="error">

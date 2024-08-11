@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Details from '../../Details';
 import { RootState } from '../../../store/store';
@@ -24,25 +24,7 @@ const RightSection: React.FC<RightSectionProps> = ({ query }) => {
     router.push({ search: query.toString() }, undefined, { shallow: true });
   }, [router, query, dispatch]);
 
-  const handleClickOutside = useCallback(
-    (event: MouseEvent) => {
-      if (
-        rightSectionRef.current &&
-        !rightSectionRef.current.contains(event.target as Node)
-      ) {
-        closeDetails();
-      }
-    },
-    [closeDetails, rightSectionRef]
-  );
-
-  useEffect(() => {
-    const handleClick = (event: MouseEvent) => handleClickOutside(event);
-    window.addEventListener('mousedown', handleClick);
-    return () => {
-      window.removeEventListener('mousedown', handleClick);
-    };
-  }, [handleClickOutside]);
+  if (!selectedItem) return null;
 
   return (
     <div ref={rightSectionRef} className="right-section">

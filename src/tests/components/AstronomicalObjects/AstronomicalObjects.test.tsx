@@ -90,6 +90,6 @@ describe('AstronomicalObjectsPage Component', () => {
     );
 
     const loadingElements = screen.getAllByText(/Loading.../i);
-    expect(loadingElements).toHaveLength(2);
+    expect(loadingElements).toHaveLength(1);
   });
 });
