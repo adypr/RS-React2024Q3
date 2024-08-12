@@ -27,9 +27,8 @@ const PopupMenu: React.FC<PopupMenuProps> = ({
           </button>
         </div>
         <div
-          className={`${styles['popup-menu__progress-bar']} ${
-            isDownloading ? styles['popup-menu__progress-bar--visible'] : ''
-          }`}
+          className={`${styles['popup-menu__progress-bar']} ${isDownloading ? styles['popup-menu__progress-bar--visible'] : ''
+            }`}
         >
           <div
             className={styles['popup-menu__progress']}

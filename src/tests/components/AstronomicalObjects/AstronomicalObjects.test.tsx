@@ -1,95 +1,177 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
+import configureStore, { MockStoreEnhanced } from 'redux-mock-store';
+import { RootState } from '../../../store/store';
 import AstronomicalObjectsPage from '../../../components/AstronomicalObjects';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import rootReducer from '../../../store/reducers';
-import { api } from '../../../services/api';
+import { setPageData } from '../../../store/slices/pageDataSlice';
 import { useRouter } from 'next/router';
+import { vi } from 'vitest';
+import { mainData } from '../../../models/data.interface';
 
 vi.mock('next/router', () => ({
   useRouter: vi.fn(),
 }));
 
-describe('AstronomicalObjectsPage Component', () => {
-  let store: ReturnType<typeof configureStore>;
-  const mockPush = vi.fn();
+const mockStore = configureStore<RootState>([]);
+
+describe('AstronomicalObjectsPage', () => {
+  let store: MockStoreEnhanced<RootState>;
 
   beforeEach(() => {
-    store = configureStore({
-      reducer: rootReducer,
-      middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(api.middleware),
-      preloadedState: {
-        pageData: {
-          data: {
-            astronomicalObjects: [
-              {
-                uid: '1',
-                name: 'Object 1',
-                astronomicalObjectType: 'Type 1',
-                location: { uid: '1', name: 'Location 1' },
-              },
-            ],
-            page: {
-              firstPage: true,
-              lastPage: false,
-              numberOfElements: 1,
-              pageNumber: 1,
-              pageSize: 10,
-              totalElements: 1,
-              totalPages: 1,
-            },
-            sort: { clauses: [] },
+    store = mockStore({
+      pageData: {
+        data: {
+          astronomicalObjects: [],
+          page: {
+            firstPage: true,
+            lastPage: true,
+            numberOfElements: 0,
+            pageNumber: 1,
+            pageSize: 10,
+            totalElements: 0,
+            totalPages: 1,
           },
-          selectedItems: [],
-          isDownloading: false,
-          downloadProgress: 0,
-        },
-        selectedItem: {
-          item: null,
-          loading: true,
-        },
-        search: {
-          query: '',
-        },
-        [api.reducerPath]: {
-          queries: {},
-          mutations: {},
-          provided: {},
-          subscriptions: {},
-          config: {
-            reducerPath: 'api',
-            online: true,
-            focused: true,
-            middlewareRegistered: true,
-            refetchOnMountOrArgChange: false,
-            refetchOnReconnect: false,
-            refetchOnFocus: false,
-            keepUnusedDataFor: 60,
-            invalidationBehavior: 'immediately',
+          sort: {
+            clauses: [],
           },
+        },
+        selectedItems: [],
+        isDownloading: false,
+        downloadProgress: 0,
+      },
+      selectedItem: {
+        item: null,
+        loading: false,
+      },
+      search: {
+        query: '',
+      },
+      api: {
+        queries: {},
+        mutations: {},
+        provided: {},
+        subscriptions: {},
+        config: {
+          refetchOnMountOrArgChange: false,
+          refetchOnReconnect: false,
+          refetchOnFocus: false,
+          reducerPath: 'api',
+          online: true,
+          focused: true,
+          middlewareRegistered: true,
+          keepUnusedDataFor: 60,
+          invalidationBehavior: 'delayed',
         },
       },
     });
 
-    vi.clearAllMocks();
-
-    (useRouter as unknown as jest.Mock).mockReturnValue({
-      push: mockPush,
-      asPath: '',
+    (useRouter as ReturnType<typeof vi.fn>).mockReturnValue({
+      route: '/',
+      pathname: '/',
+      query: {},
+      asPath: '/',
+      push: vi.fn(),
+      replace: vi.fn(),
+      reload: vi.fn(),
+      back: vi.fn(),
+      prefetch: vi.fn(),
+      beforePopState: vi.fn(),
+      isFallback: false,
     });
   });
 
-  it('displays a loading indicator while fetching data', () => {
+  it('should dispatch setPageData when data prop is provided', () => {
+    const data: mainData = {
+      astronomicalObjects: [
+        {
+          name: 'Earth',
+          astronomicalObjectType: 'Planet',
+          location: { name: 'Solar System', uid: 'loc1' },
+          uid: '1',
+        },
+      ],
+      page: {
+        firstPage: true,
+        lastPage: true,
+        numberOfElements: 1,
+        pageNumber: 1,
+        pageSize: 10,
+        totalElements: 1,
+        totalPages: 1,
+      },
+      sort: {
+        clauses: [],
+      },
+    };
+
     render(
       <Provider store={store}>
-        <AstronomicalObjectsPage />
+        <AstronomicalObjectsPage data={data} currentPage={1} searchQuery="" />
       </Provider>
     );
 
-    const loadingElements = screen.getAllByText(/Loading.../i);
-    expect(loadingElements).toHaveLength(1);
+    const actions = store.getActions();
+    expect(actions).toContainEqual(setPageData(data));
+  });
+
+  it('should render LeftSection and RightSection components', () => {
+    const data: mainData = {
+      astronomicalObjects: [
+        {
+          name: 'Earth',
+          astronomicalObjectType: 'Planet',
+          location: { name: 'Solar System', uid: 'loc1' },
+          uid: '1',
+        },
+      ],
+      page: {
+        firstPage: true,
+        lastPage: true,
+        numberOfElements: 1,
+        pageNumber: 1,
+        pageSize: 10,
+        totalElements: 1,
+        totalPages: 1,
+      },
+      sort: {
+        clauses: [],
+      },
+    };
+
+    render(
+      <Provider store={store}>
+        <AstronomicalObjectsPage data={data} currentPage={1} searchQuery="" />
+      </Provider>
+    );
+
+    expect(screen.getByText('Title: Earth')).toBeInTheDocument();
+    expect(screen.getByText('Location: Solar System')).toBeInTheDocument();
+  });
+
+  it('should not render anything if no data is provided', () => {
+    const emptyData: mainData = {
+      astronomicalObjects: [],
+      page: {
+        firstPage: true,
+        lastPage: true,
+        numberOfElements: 0,
+        pageNumber: 1,
+        pageSize: 10,
+        totalElements: 0,
+        totalPages: 1,
+      },
+      sort: {
+        clauses: [],
+      },
+    };
+
+    render(
+      <Provider store={store}>
+        <AstronomicalObjectsPage data={emptyData} currentPage={1} searchQuery="" />
+      </Provider>
+    );
+
+    expect(screen.queryByText('Title:')).not.toBeInTheDocument();
   });
 });

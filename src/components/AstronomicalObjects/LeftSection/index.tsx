@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useDispatch } from 'react-redux';
 import CardList from '../../CardList';
@@ -51,6 +51,15 @@ const LeftSection: React.FC<LeftSectionProps> = ({
   const handleLeftSectionClick = () => {
     dispatch(setSelectedItem(null));
   };
+
+  useEffect(() => {
+    if (!isFetching && storedData) {
+      const timeoutId = setTimeout(() => {
+      }, 500);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [isFetching, storedData]);
 
   return (
     <div className="left-section" onClick={handleLeftSectionClick}>

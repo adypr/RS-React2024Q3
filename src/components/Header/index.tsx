@@ -18,14 +18,16 @@ const Header: React.FC<HeaderProps> = ({ onEmulateError }) => {
   );
 
   useEffect(() => {
-    const nameQuery = query.get('name');
-    const savedSearch = localStorage.getItem('searching') || '';
-    if (nameQuery) {
-      dispatch(setSearchQuery(nameQuery));
-      setInitialSearch(nameQuery);
-    } else if (savedSearch) {
-      dispatch(setSearchQuery(savedSearch));
-      setInitialSearch(savedSearch);
+    if (typeof window !== 'undefined') {
+      const nameQuery = query.get('name');
+      const savedSearch = localStorage.getItem('searching') || '';
+      if (nameQuery) {
+        dispatch(setSearchQuery(nameQuery));
+        setInitialSearch(nameQuery);
+      } else if (savedSearch) {
+        dispatch(setSearchQuery(savedSearch));
+        setInitialSearch(savedSearch);
+      }
     }
   }, [query, dispatch]);
 

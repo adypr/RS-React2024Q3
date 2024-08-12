@@ -80,6 +80,9 @@ describe('LeftSection Component', () => {
         isDownloading: false,
         downloadProgress: 0,
       },
+      search: {
+        query: '',
+      },
     });
 
     (useRouter as unknown as jest.Mock).mockReturnValue({
@@ -98,6 +101,9 @@ describe('LeftSection Component', () => {
         },
         pageData: {
           selectedItems: [],
+        },
+        search: {
+          query: '',
         },
       }),
       { isFetching: true }

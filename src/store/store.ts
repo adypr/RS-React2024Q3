@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import rootReducer from './reducers';
-import { api } from '../services/api';
+import {api} from '../services/api';
 
 const store = configureStore({
   reducer: rootReducer,
@@ -9,7 +9,7 @@ const store = configureStore({
   devTools:
     process.env.NODE_ENV !== 'production'
       ? {
-          name: 'MyAstonomicalStore',
+          name: 'MyAstronomicalStore',
           trace: true,
           traceLimit: 25,
         }

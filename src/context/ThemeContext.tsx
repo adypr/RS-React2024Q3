@@ -11,9 +11,11 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({
   const [theme, setTheme] = useState<Theme | null>(null);
 
   useEffect(() => {
-    const savedTheme =
-      typeof window !== 'undefined' ? localStorage.getItem('theme') : null;
-    setTheme((savedTheme as Theme) || 'light');
+    if (typeof window !== 'undefined') {
+      const savedTheme =
+        typeof window !== 'undefined' ? localStorage.getItem('theme') : null;
+      setTheme((savedTheme as Theme) || 'light');
+    }
   }, []);
 
   useEffect(() => {

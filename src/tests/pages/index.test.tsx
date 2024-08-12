@@ -1,22 +1,140 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
-import Home from '../../pages';
+import Home, { getServerSideProps, HomeProps } from '../../pages/index';
+import { fetchAstronomicalObjects } from '../../services/api';
+import { mainData } from '../../models/data.interface';
+import { GetServerSidePropsContext } from 'next';
+import { Provider } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
+import { vi } from 'vitest';
+import rootReducer from '../../store/reducers';
+import * as apiModule from '../../services/api';
+import { useRouter } from 'next/router';
 
 vi.mock('next/router', () => ({
   useRouter: vi.fn(),
 }));
 
-vi.mock('../../components/AstronomicalObjects', () => ({
-  default: () => <div>Astronomical Objects Page Mock</div>,
-}));
+vi.mock('../../services/api', async (importOriginal) => {
+  const actual = (await importOriginal()) as typeof apiModule;
+  return {
+    ...actual,
+    fetchAstronomicalObjects: vi.fn(),
+    api: {
+      reducerPath: 'api',
+      reducer: (state = {}) => state,
+    },
+  };
+});
 
 describe('Home Page', () => {
-  it('renders the AstronomicalObjectsPage component', () => {
-    render(<Home />);
+  const mockData: mainData = {
+    astronomicalObjects: [
+      {
+        astronomicalObjectType: 'Planet',
+        location: {
+          uid: 'loc1',
+          name: 'Location 1',
+        },
+        name: 'Object 1',
+        uid: 'obj1',
+        isChecked: true,
+      },
+      {
+        astronomicalObjectType: 'Star',
+        location: {
+          uid: 'loc2',
+          name: 'Location 2',
+        },
+        name: 'Object 2',
+        uid: 'obj2',
+      },
+    ],
+    page: {
+      firstPage: true,
+      lastPage: false,
+      numberOfElements: 2,
+      pageNumber: 1,
+      pageSize: 10,
+      totalElements: 2,
+      totalPages: 1,
+    },
+    sort: {
+      clauses: [],
+    },
+  };
 
-    expect(
-      screen.getByText('Astronomical Objects Page Mock')
-    ).toBeInTheDocument();
+  const store = configureStore({
+    reducer: rootReducer,
+  });
+
+  const mockPush = vi.fn();
+  (useRouter as jest.Mock).mockReturnValue({
+    push: mockPush,
+    query: {},
+    pathname: '/',
+    asPath: '/',
+    route: '/',
+  });
+
+  beforeEach(() => {
+    (fetchAstronomicalObjects as jest.Mock).mockResolvedValue(mockData);
+  });
+
+  const renderWithProvider = (ui: React.ReactElement) => {
+    return render(<Provider store={store}>{ui}</Provider>);
+  };
+
+  it('renders without crashing', () => {
+    const props: HomeProps = {
+      data: mockData,
+      currentPage: 1,
+      searchQuery: '',
+    };
+
+    renderWithProvider(<Home {...props} />);
+
+    expect(screen.getByText(/Title:\s*Object 1/i)).toBeInTheDocument();
+    expect(screen.getByText(/Title:\s*Object 2/i)).toBeInTheDocument();
+  });
+
+  it('getServerSideProps fetches data and returns props', async () => {
+    const context = {
+      query: {
+        page: '1',
+        name: 'Object 1',
+      },
+    } as unknown as GetServerSidePropsContext;
+
+    const result = await getServerSideProps(context);
+
+    expect(result).toEqual({
+      props: {
+        data: mockData,
+        currentPage: 1,
+        searchQuery: 'Object 1',
+      },
+    });
+    expect(fetchAstronomicalObjects).toHaveBeenCalledWith({ currentPage: 1, searchQuery: 'Object 1' });
+  });
+
+  it('handles pagination and search query correctly', async () => {
+    const context = {
+      query: {
+        page: '2',
+        name: 'Object 2',
+      },
+    } as unknown as GetServerSidePropsContext;
+
+    const result = await getServerSideProps(context);
+
+    expect(result).toEqual({
+      props: {
+        data: mockData,
+        currentPage: 2,
+        searchQuery: 'Object 2',
+      },
+    });
+    expect(fetchAstronomicalObjects).toHaveBeenCalledWith({ currentPage: 2, searchQuery: 'Object 2' });
   });
 });

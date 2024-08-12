@@ -1,54 +1,44 @@
-import React, { useEffect, useMemo } from 'react';
-import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useFetchAstronomicalObjectsQuery } from '../../services/api';
-import { RootState } from '../../store/store';
 import { setPageData } from '../../store/slices/pageDataSlice';
 import LeftSection from './LeftSection';
 import RightSection from './RightSection';
 import DownloadHandler from './DownloadHandler';
+import { mainData } from '../../models/data.interface';
+import { RootState } from '../../store/store';
 
-const AstronomicalObjectsPage: React.FC = () => {
-  const router = useRouter();
+interface AstronomicalObjectsPageProps {
+  data: mainData;
+  currentPage: number;
+  searchQuery: string;
+}
+
+const AstronomicalObjectsPage: React.FC<AstronomicalObjectsPageProps> = ({ data, currentPage, searchQuery }) => {
   const dispatch = useDispatch();
-
-  const query = useMemo(
-    () => new URLSearchParams(router.asPath.split('?')[1]),
-    [router.asPath]
-  );
-  const currentPage = useMemo(
-    () => parseInt(query.get('page') || '1', 10),
-    [query]
-  );
-  const searchQuery = useSelector((state: RootState) => state.search.query);
-
-  const {
-    data,
-    isLoading: isFetching,
-    isError,
-    error,
-  } = useFetchAstronomicalObjectsQuery({
-    currentPage,
-    searchQuery,
-  });
+  const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    if (data) {
-      dispatch(setPageData(data));
-    }
+    dispatch(setPageData(data));
+    setIsInitialized(true);
   }, [data, dispatch]);
+
+  const searchQueryState = useSelector((state: RootState) => state.search.query);
+
+  if (!isInitialized) {
+    return null;
+  }
 
   return (
     <div className="wrapper">
       <div className="content">
         <LeftSection
-          isFetching={isFetching}
-          isError={isError}
-          error={error}
+          isFetching={false}
+          isError={false}
+          error={null}
           storedData={data}
           currentPage={currentPage}
         />
-        <RightSection query={query} />
+        <RightSection query={new URLSearchParams()} />
       </div>
       <DownloadHandler />
     </div>
