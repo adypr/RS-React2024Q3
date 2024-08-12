@@ -9,10 +9,10 @@ const Details: React.FC<DetailsProps> = ({ item, onClose }) => (
     <p>Type: {item.astronomicalObjectType}</p>
     <p>Location: {item.location?.name || 'Unknown location'}</p>
     <Image
-      src="https://spaceholder.cc/i/350x500"
+      src="https://spaceholder.cc/i/350x450"
       alt="Star Trek"
       width={350}
-      height={500}
+      height={450}
     />
   </div>
 );

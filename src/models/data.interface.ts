@@ -1,3 +1,9 @@
+export interface HomeProps {
+  data: mainData;
+  currentPage: number;
+  searchQuery: string;
+}
+
 export type AstronomicalObject = {
   astronomicalObjectType: string;
   location: {

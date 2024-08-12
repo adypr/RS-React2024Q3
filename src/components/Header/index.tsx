@@ -25,11 +25,14 @@ const Header: React.FC<HeaderProps> = ({ onEmulateError }) => {
         dispatch(setSearchQuery(nameQuery));
         setInitialSearch(nameQuery);
       } else if (savedSearch) {
+        query.set('name', savedSearch);
+        router.replace({ search: query.toString() }, undefined, { shallow: true });
+
         dispatch(setSearchQuery(savedSearch));
         setInitialSearch(savedSearch);
       }
     }
-  }, [query, dispatch]);
+  }, [query, dispatch, router]);
 
   const handleSearchSubmit = (searchQuery: string) => {
     query.set('page', '1');

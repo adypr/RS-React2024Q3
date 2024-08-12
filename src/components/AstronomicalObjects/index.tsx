@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPageData } from '../../store/slices/pageDataSlice';
+import { setData } from '../../store/slices/astronomicalObjectsSlice';
 import LeftSection from './LeftSection';
 import RightSection from './RightSection';
 import DownloadHandler from './DownloadHandler';
@@ -19,6 +20,7 @@ const AstronomicalObjectsPage: React.FC<AstronomicalObjectsPageProps> = ({ data,
 
   useEffect(() => {
     dispatch(setPageData(data));
+    dispatch(setData(data));
     setIsInitialized(true);
   }, [data, dispatch]);
 

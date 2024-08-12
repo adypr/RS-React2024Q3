@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import CardList from '../../CardList';
 import Pagination from '../../Pagination';
 import {
@@ -11,16 +11,20 @@ import {
   setSelectedItem,
   setLoading,
 } from '../../../store/slices/selectedItemSlice';
+import { RootState } from '../../../store/store';
+import { fetchAstronomicalObjects } from '../../../services/api';
 
 const LeftSection: React.FC<LeftSectionProps> = ({
-  isFetching,
   isError,
   error,
-  storedData,
   currentPage,
 }) => {
   const router = useRouter();
   const dispatch = useDispatch();
+  const [filteredData, setFilteredData] = useState<AstronomicalObject[]>([]);
+  const [totalPages, setTotalPages] = useState(0);
+  const [loading, setLoadingState] = useState(true);
+  const searchQueryState = useSelector((state: RootState) => state.search.query);
 
   const handlePageChange = (newPage: number) => {
     const query = { ...router.query };
@@ -50,38 +54,63 @@ const LeftSection: React.FC<LeftSectionProps> = ({
 
   const handleLeftSectionClick = () => {
     dispatch(setSelectedItem(null));
+
+    const query = { ...router.query };
+
+    delete query.details;
+
+    router.push({ pathname: router.pathname, query }, undefined, { shallow: true });
   };
 
   useEffect(() => {
-    if (!isFetching && storedData) {
-      const timeoutId = setTimeout(() => {
-      }, 500);
+    const fetchData = async () => {
+      setLoadingState(true);
+      try {
+        const searchQuery = localStorage.getItem('searching') || searchQueryState || '';
+        const result = await fetchAstronomicalObjects({
+          currentPage,
+          searchQuery,
+        });
 
-      return () => clearTimeout(timeoutId);
-    }
-  }, [isFetching, storedData]);
+        setFilteredData(result.astronomicalObjects);
+        setTotalPages(result.page.totalPages);
+      } catch (err) {
+        console.error('Error fetching data:', err);
+      } finally {
+        setLoadingState(false);
+      }
+    };
+
+    fetchData();
+  }, [currentPage, searchQueryState]);
 
   return (
     <div className="left-section" onClick={handleLeftSectionClick}>
-      {isFetching && <div className="loading">Loading...</div>}
+      {loading && <div className="loading">Loading...</div>}
+      {!loading && !isError && (
+        <>
+          {filteredData.length > 0 ? (
+            <>
+              <CardList
+                data={filteredData}
+                onItemClick={handleItemClick}
+              />
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            </>
+          ) : (
+            <h2 className="not-found">Nothing found</h2>
+          )}
+        </>
+      )}
       {isError && (
         <div className="error">
           Error:{' '}
           {error instanceof Error ? error.message : JSON.stringify(error)}
         </div>
-      )}
-      {storedData && !isFetching && !isError && (
-        <>
-          <CardList
-            data={storedData.astronomicalObjects}
-            onItemClick={handleItemClick}
-          />
-          <Pagination
-            currentPage={currentPage}
-            totalPages={storedData.page.totalPages}
-            onPageChange={handlePageChange}
-          />
-        </>
       )}
     </div>
   );

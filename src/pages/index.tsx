@@ -2,13 +2,7 @@ import React from 'react';
 import { GetServerSideProps } from 'next';
 import { fetchAstronomicalObjects } from '../services/api';
 import AstronomicalObjectsPage from '../components/AstronomicalObjects';
-import { mainData } from '../models/data.interface';
-
-export interface HomeProps {
-  data: mainData;
-  currentPage: number;
-  searchQuery: string;
-}
+import { HomeProps } from '@/models/data.interface';
 
 export const getServerSideProps: GetServerSideProps<HomeProps> = async (context) => {
   const currentPage = parseInt(context.query.page as string) || 1;
