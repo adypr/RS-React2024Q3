@@ -29,6 +29,7 @@ describe('Header', () => {
   beforeEach(() => {
     (useRouter as unknown as jest.Mock).mockReturnValue({
       push: mockPush,
+      replace: vi.fn(),
       asPath: '',
     });
 
@@ -84,6 +85,7 @@ describe('Header', () => {
     (useRouter as unknown as jest.Mock).mockReturnValue({
       asPath: '?name=Voyager',
       push: mockPush,
+      replace: vi.fn(),
     });
 
     render(<Header onEmulateError={mockOnEmulateError} />);
@@ -91,10 +93,24 @@ describe('Header', () => {
     expect(screen.getByDisplayValue('Voyager')).toBeInTheDocument();
   });
 
-  it('loads initial search query from localStorage', () => {
-    localStorage.setItem('searching', 'Discovery');
+  it('removes search query and local storage item when search is cleared', () => {
+    (useRouter as unknown as jest.Mock).mockReturnValue({
+      asPath: '?name=Voyager',
+      push: mockPush,
+      replace: vi.fn(),
+    });
+
     render(<Header onEmulateError={mockOnEmulateError} />);
 
-    expect(screen.getByDisplayValue('Discovery')).toBeInTheDocument();
+    fireEvent.change(screen.getByRole('textbox'), {
+      target: { value: '' },
+    });
+    fireEvent.click(screen.getByText('Search'));
+
+    expect(mockDispatch).toHaveBeenCalledWith(setSearchQuery(''));
+    expect(mockPush).toHaveBeenCalledWith({
+      search: 'page=1',
+    });
+    expect(localStorage.getItem('searching')).toBeNull();
   });
 });

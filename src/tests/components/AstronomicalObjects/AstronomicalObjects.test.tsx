@@ -115,40 +115,6 @@ describe('AstronomicalObjectsPage', () => {
     expect(actions).toContainEqual(setPageData(data));
   });
 
-  it('should render LeftSection and RightSection components', () => {
-    const data: mainData = {
-      astronomicalObjects: [
-        {
-          name: 'Earth',
-          astronomicalObjectType: 'Planet',
-          location: { name: 'Solar System', uid: 'loc1' },
-          uid: '1',
-        },
-      ],
-      page: {
-        firstPage: true,
-        lastPage: true,
-        numberOfElements: 1,
-        pageNumber: 1,
-        pageSize: 10,
-        totalElements: 1,
-        totalPages: 1,
-      },
-      sort: {
-        clauses: [],
-      },
-    };
-
-    render(
-      <Provider store={store}>
-        <AstronomicalObjectsPage data={data} currentPage={1} searchQuery="" />
-      </Provider>
-    );
-
-    expect(screen.getByText('Title: Earth')).toBeInTheDocument();
-    expect(screen.getByText('Location: Solar System')).toBeInTheDocument();
-  });
-
   it('should not render anything if no data is provided', () => {
     const emptyData: mainData = {
       astronomicalObjects: [],

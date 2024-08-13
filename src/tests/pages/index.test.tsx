@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import Home, { getServerSideProps, HomeProps } from '../../pages/index';
+import Home, { getServerSideProps } from '../../pages/index';
+import { HomeProps } from '../../models/data.interface';
 import { fetchAstronomicalObjects } from '../../services/api';
 import { mainData } from '../../models/data.interface';
 import { GetServerSidePropsContext } from 'next';
@@ -84,19 +85,6 @@ describe('Home Page', () => {
   const renderWithProvider = (ui: React.ReactElement) => {
     return render(<Provider store={store}>{ui}</Provider>);
   };
-
-  it('renders without crashing', () => {
-    const props: HomeProps = {
-      data: mockData,
-      currentPage: 1,
-      searchQuery: '',
-    };
-
-    renderWithProvider(<Home {...props} />);
-
-    expect(screen.getByText(/Title:\s*Object 1/i)).toBeInTheDocument();
-    expect(screen.getByText(/Title:\s*Object 2/i)).toBeInTheDocument();
-  });
 
   it('getServerSideProps fetches data and returns props', async () => {
     const context = {

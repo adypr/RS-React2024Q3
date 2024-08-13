@@ -1,14 +1,12 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import LeftSection from '../../../components/AstronomicalObjects/LeftSection';
-import {
-  setSelectedItem,
-  setLoading,
-} from '../../../store/slices/selectedItemSlice';
+import * as selectedItemActions from '../../../store/slices/selectedItemSlice';
 import { vi } from 'vitest';
 import { useRouter } from 'next/router';
+import * as api from '../../../services/api';
 
 vi.mock('next/router', () => ({
   useRouter: vi.fn(),
@@ -32,25 +30,43 @@ const renderWithProviders = (
             astronomicalObjects: [
               {
                 uid: '1',
-                name: 'Object 1',
-                astronomicalObjectType: 'Type 1',
-                location: { uid: 'loc1', name: 'Location 1' },
+                name: "'aucdet IX",
+                astronomicalObjectType: 'PLANET',
+                location: { uid: 'loc1', name: 'Alpha Quadrant' },
               },
               {
                 uid: '2',
-                name: 'Object 2',
-                astronomicalObjectType: 'Type 2',
-                location: { uid: 'loc2', name: 'Location 2' },
+                name: "'etnap Nebula",
+                astronomicalObjectType: 'NEBULA',
+                location: { uid: 'loc2', name: 'Beta Quadrant' },
+              },
+              {
+                uid: '3',
+                name: '1 Centauri',
+                astronomicalObjectType: 'STAR_SYSTEM',
+                location: { uid: 'loc3', name: 'Beta Quadrant' },
+              },
+              {
+                uid: '4',
+                name: '11 Leonis Minoris',
+                astronomicalObjectType: 'STAR_SYSTEM',
+                location: { uid: 'loc4', name: 'Alpha Quadrant' },
+              },
+              {
+                uid: '5',
+                name: '1889 V',
+                astronomicalObjectType: 'COMET',
+                location: { uid: 'loc5', name: 'Earth' },
               },
             ],
             page: {
-              totalPages: 2,
+              totalPages: 1,
               pageNumber: 1,
               pageSize: 10,
-              totalElements: 20,
+              totalElements: 5,
               firstPage: true,
-              lastPage: false,
-              numberOfElements: 2,
+              lastPage: true,
+              numberOfElements: 5,
             },
             sort: {
               clauses: [],
@@ -87,6 +103,7 @@ describe('LeftSection Component', () => {
 
     (useRouter as unknown as jest.Mock).mockReturnValue({
       push: mockPush,
+      pathname: '/',
       query: {},
     });
     mockPush.mockClear();
@@ -120,27 +137,122 @@ describe('LeftSection Component', () => {
     expect(screen.getByText('Error: "Network Error"')).toBeInTheDocument();
   });
 
-  test('should display data when available', () => {
-    renderWithProviders(store);
-    expect(screen.getByText(/Object 1/i)).toBeInTheDocument();
-    expect(screen.getByText(/Object 2/i)).toBeInTheDocument();
+  test('should display list of astronomical objects', async () => {
+    renderWithProviders(store, {
+      isFetching: false,
+      isError: false,
+      error: null,
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByText(/Loading.../i)).not.toBeInTheDocument();
+    });
+
+    expect(screen.getByText("Title: 'aucdet IX")).toBeInTheDocument();
+    expect(screen.getByText("Title: 'etnap Nebula")).toBeInTheDocument();
+    expect(screen.getByText('Title: 1 Centauri')).toBeInTheDocument();
   });
 
-  test('should navigate to item details on click', () => {
-    renderWithProviders(store);
+  test('should handle item click', async () => {
+    const mockSetSelectedItem = vi.spyOn(selectedItemActions, 'setSelectedItem');
 
-    const object1 = screen.getByText(/Object 1/i);
-    fireEvent.click(object1);
+    renderWithProviders(store, {
+      isFetching: false,
+      isError: false,
+      error: null,
+    });
 
-    const actions = store.getActions();
-    const selectedItem = {
-      uid: '1',
-      name: 'Object 1',
-      astronomicalObjectType: 'Type 1',
-      location: { uid: 'loc1', name: 'Location 1' },
-    };
+    await waitFor(() => {
+      expect(screen.queryByText(/Loading.../i)).not.toBeInTheDocument();
+    });
 
-    expect(actions).toEqual([setSelectedItem(selectedItem), setLoading(true)]);
-    expect(mockPush).toHaveBeenCalled();
+    const targetElement = screen.getByText("Title: 'aucdet IX");
+    fireEvent.click(targetElement);
+
+    await waitFor(() => {
+      expect(mockSetSelectedItem).toHaveBeenCalledWith({
+        uid: 'ASMA0000015822',
+        name: "'aucdet IX",
+        astronomicalObjectType: 'PLANET',
+        location: { uid: 'ASMA0000025892', name: 'Alpha Quadrant' },
+      });
+    });
+  });
+
+
+  test('should paginate correctly', async () => {
+    renderWithProviders(store, {
+      isFetching: false,
+      isError: false,
+      error: null,
+      currentPage: 1,
+      storedData: {
+        astronomicalObjects: [
+          {
+            uid: '1',
+            name: "'aucdet IX",
+            astronomicalObjectType: 'PLANET',
+            location: { uid: 'loc1', name: 'Alpha Quadrant' },
+          },
+          {
+            uid: '2',
+            name: "'etnap Nebula",
+            astronomicalObjectType: 'NEBULA',
+            location: { uid: 'loc2', name: 'Beta Quadrant' },
+          },
+        ],
+        page: {
+          totalPages: 2,
+          pageNumber: 1,
+          pageSize: 10,
+          totalElements: 20,
+          firstPage: true,
+          lastPage: false,
+          numberOfElements: 2,
+        },
+        sort: {
+          clauses: [],
+        },
+      },
+    });
+
+    await waitFor(() => expect(screen.queryByText(/Loading.../i)).not.toBeInTheDocument());
+
+    const pageButton = screen.getByRole('button', { name: '2' });
+    fireEvent.click(pageButton);
+
+    expect(mockPush).toHaveBeenNthCalledWith(1, {
+      pathname: '/',
+      query: { page: '2' },
+    });
+  });
+
+  test('should refetch data on search query change', async () => {
+    const mockFetch = vi.spyOn(api, 'fetchAstronomicalObjects');
+    renderWithProviders(store, {
+      isFetching: false,
+      isError: false,
+      error: null,
+    });
+
+    await waitFor(() => {
+      expect(mockFetch).toHaveBeenCalledWith({
+        currentPage: 1,
+        searchQuery: '',
+      });
+    });
+  });
+
+  test('should find the outside element', async () => {
+    renderWithProviders(store, {
+      isFetching: false,
+      isError: false,
+      error: null,
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('outside-element')).toBeInTheDocument();
+      expect(screen.getByText('Outside Element')).toBeInTheDocument();
+    });
   });
 });

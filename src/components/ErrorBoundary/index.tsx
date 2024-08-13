@@ -21,8 +21,8 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     console.error('Error caught by ErrorBoundary:', error, errorInfo);
   }
 
-  handleReload = () => {
-    window.location.reload();
+  handleResetError = () => {
+    this.setState({ hasError: false });
   };
 
   render() {
@@ -31,12 +31,8 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
         <div className={styles.message}>
           <h1>Something went wrong.</h1>
           <p>
-            An unexpected error occurred. Please reload this app or try again
-            later.
+            An unexpected error occurred. Please try reloading this component.
           </p>
-          <button className="button" onClick={this.handleReload}>
-            Reload App
-          </button>
         </div>
       );
     }
