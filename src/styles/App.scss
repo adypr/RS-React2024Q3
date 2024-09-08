@@ -1,0 +1,109 @@
+.header,
+.footer {
+  background: url('../assets/bg.jpg') no-repeat;
+  background-size: cover;
+}
+
+.main {
+  margin-bottom: auto;
+  padding: 25px 8px;
+}
+
+header,
+footer {
+  color: var(--text-color);
+}
+
+.loading {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+
+  background: url('../assets/ripples.svg') no-repeat center;
+}
+
+.content {
+  display: flex;
+  justify-content: space-between;
+  min-height: 90vh;
+
+  background-color: var(--text-color);
+}
+
+.left-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-grow: 1;
+  max-width: 50%;
+}
+
+.right-section {
+  width: 30%;
+
+  color: var(--text-color-contrast);
+
+  background-color: var(--background-color-light);
+
+  & img {
+    padding: 15px;
+  }
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+
+  button {
+    margin: 0 5px;
+    padding: 5px 10px;
+
+    color: var(--text-color-contrast);
+
+    background: none;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+
+    &.active {
+      color: var(--accent-color);
+
+      border-color: var(--accent-color);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+  }
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  & img {
+    width: 100%;
+    height: auto;
+    padding: 0;
+  }
+
+  & button {
+    width: fit-content;
+    padding: 5px;
+
+    font-weight: 600;
+
+    background-color: var(--accent-color);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--button-hover);
+
+      transition: all ease-in-out 0.2s;
+    }
+  }
+}
